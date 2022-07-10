@@ -85,17 +85,18 @@ function show_LoadTable(appendRow){
 
 
 function Transpose_(array){
+  console.log(array);
   return array[0].map(function(col, i) { return array.map(function(row) { return row[i] }) });
 }
-function gsrfnts(query,target_id)
+async function gsrfn(query)
 {
 	var p="https://script.google.com/macros/s/AKfycbyH2V4BDffuvygU_jyhmyJvFIGjj6LlNXLVHWMyubsw7960mI06/exec?"+query;
-	request_promise(p).then((res)=>{if(document.getElementById(target_id)) {document.getElementById(target_id).innerHTML=res.responseText;}});
-}
-function gsrfn(query,target_id)
-{
-	var p="https://script.google.com/macros/s/AKfycbyH2V4BDffuvygU_jyhmyJvFIGjj6LlNXLVHWMyubsw7960mI06/exec?"+query;
-	fetch(p).then((res)=>{if(document.getElementById(target_id)) {document.getElementById(target_id).innerHTML=res.responseText;}});
+	var obj;
+	await fetch(p).then(res=>res.text().then(res => {
+		//document.getElementById(target_id).innerHTML=res;
+		obj = JSON.parse(res);
+	}));
+	return obj;
 }
 
 Array.prototype.col = function(cNo) {return this.map(function(value,index) {return value[cNo];});}
@@ -297,207 +298,32 @@ function show_FBD(){
   }
   
 }
-function sfd_bmd_Table(){
+async function sfd_bmd_Table(){
   let Data=JSON.parse(gidh("_cw_LoadData"));
   //https://script.google.com/macros/s/AKfycbyH2V4BDffuvygU_jyhmyJvFIGjj6LlNXLVHWMyubsw7960mI06/exec?fn=getRequest&request=abcd
-  gsrfn("fn=getRequest&request=abcd","target_id");
-  let text="Sum of net upward force is zero as beam is not moving. Assuming support reaction to be in upward direction, let us writeTherefore,"
-  let cantilever=false;
-  let sfbmtable=[["Particulars","Distance ('x' m)","Shearing Force (kN)","Dist2(for udl)","SF2(for udl)"]];
-  let F="0 = ";
-  let M="0 = ",udlCentroid="",udlCentroid2="",udlCentroid3="",eqns=[["Ra","Rb","RHS"],[],[]]; 
-  //moment calculation is at Hinged support or at Fixed Support
-  let MPI=Data.col(0).indexOf("Hinged Support");
-  if(MPI==-1){MPI=Data.col(0).indexOf("Fixed Support");}
-  if(MPI==-1){return "Hinged/Fixed Support not found.";}
-  //console.log("MPI = "+MPI+"   Data[MPI][1] = "+Data[MPI][1])
-  for(let i=2;i<Data.length;i++){    
-    //if(Data[i][0]=="Hinged Support"){ if(Data[i][1]==0){ F += "- Ra";M += "- Ra * 0 ";eqns[1][0]=1;eqns[2][0]=0;}else{F += "- Rb ";M += "- Rb * "+Data[i][1];eqns[1][1]=1;eqns[2][1]=Data[i][1];}}
-    //if(Data[i][0]=="Roller Support"){ if(Data[i][1]==0){ F += "- Ra";M += "- Ra * 0 ";eqns[1][0]=1;eqns[2][0]=0;}else{F += "- Rb ";M += "- Rb * "+Data[i][1];eqns[1][1]=1;eqns[2][1]=Data[i][1];}}
-    if(Data[i][0]=="Hinged Support"){ F += "- Ra";M += "- Ra * "+(Number(Data[i][1])-Number(Data[MPI][1]));eqns[1][0]=1;eqns[2][0]=(Number(Data[i][1])-Number(Data[MPI][1]));}
-    if(Data[i][0]=="Roller Support"){ F += "- Rb";M += "- Rb * "+(Number(Data[i][1])-Number(Data[MPI][1]));eqns[1][1]=1;eqns[2][1]=(Number(Data[i][1])-Number(Data[MPI][1]));}
-    if(Data[i][0]=="Distributed Load"){
-      F += "+ ("+Data[i][3]+" + "+Data[i][4]+") * ("+Data[i][2]+ " - "+Data[i][1]+") / "+2+"";
-      udlCentroid+="Finding Centroid of Distributed Load <br>";
-      udlCentroid += "("+Data[i][3]+" * ("+Data[i][2]+"-"+Data[i][1]+")"+" * ("+Data[i][2]+"-"+Data[i][1]+") / 2 )"; //l1*(x2-x1)^2/2
-      udlCentroid += " + ( ( 1/2 * ("+Data[i][2]+"-"+Data[i][1]+") * ("+Data[i][4]+"-"+Data[i][3]+") ) * ( 2/3 * ("+Data[i][2]+"-"+Data[i][1]+")) )"; //(1/2*(x2-x1)*(l2-l1) ) * (2/3 * (x2-x1) )
-      udlCentroid += " = X * ( 1/2 * ("+Data[i][3]+"+"+Data[i][4]+") * ("+Data[i][2]+"-"+Data[i][1]+") )";
-      udlCentroid2 += (Data[i][3]*(Data[i][2]-Data[i][1])*(Data[i][2]-Data[i][1]) / 2 ); //l1*(x2-x1)^2/2
-      udlCentroid2 += " + "+( ( 1/2 * (Data[i][2]-Data[i][1])*(Data[i][4]-Data[i][3]) ) * ( 2/3 * (Data[i][2]-Data[i][1])) ); //(1/2*(x2-x1)*(l2-l1) ) * (2/3 * (x2-x1) )
-      udlCentroid2 += " = X * "+( 1/2 * (Number(Data[i][3])+Number(Data[i][4])) * (Data[i][2]-Data[i][1]) );
-      udlCentroid3 += (Data[i][3]*(Data[i][2]-Data[i][1])*(Data[i][2]-Data[i][1]) / 2 ); //l1*(x2-x1)^2/2
-      udlCentroid3 = Number(udlCentroid3)+Number( ( 1/2 * (Data[i][2]-Data[i][1])*(Data[i][4]-Data[i][3]) ) * ( 2/3 * (Data[i][2]-Data[i][1])) ); //(1/2*(x2-x1)*(l2-l1) ) * (2/3 * (x2-x1) )
-      let Xcentroid=(Number(udlCentroid3)/( 1/2 * (Number(Data[i][3])+Number(Data[i][4])) * (Data[i][2]-Data[i][1]) ));
-      let Xabs = (Number(Xcentroid)+Number(Data[i][1]));
-      udlCentroid3 = "X = "+Number(udlCentroid3)+"/"+( 1/2 * (Number(Data[i][3])+Number(Data[i][4])) * (Data[i][2]-Data[i][1]) )+" = "+Xcentroid;
-      udlCentroid3 += "<br>Xabs = "+Xcentroid+"+"+Data[i][1] +" = "+Xabs;
-      let DL_sf=( 1/2 * (Number(Data[i][3])+Number(Data[i][4])) * (Data[i][2]-Data[i][1]) );
-      sfbmtable.push(["D.Distributed Load",Number(Data[i][1]),Number(Data[i][3]),Number(Data[i][2]),Number(Data[i][4])]);
-      M += "+ (("+Data[i][3]+" + "+Data[i][4]+") * ("+Data[i][2]+ " - "+Data[i][1]+") / "+2+") * "+ (Xabs-Number(Data[MPI][1]));
-      
-    } 
-    if(Data[i][0]=="Point Load"){
-      F += "+ ( "+Data[i][3]+" * sin("+Data[i][5]+") )";
-      M += "+ ( "+Data[i][3]+" * sin("+Data[i][5]+") * "+(Data[i][1]-Number(Data[MPI][1]))+" )";
-      let PL_sf=Data[i][3] * Math.sin(Data[i][5]*Math.PI/180);
-      sfbmtable.push(["B.Point Load",Number(Data[i][1]),PL_sf,"",""]);
-    }
-    if(Data[i][0]=="Moment"){
-      let sgn="+"
-      if(Data[i][5]=="CC"){sgn="-";}
-      M += sgn+" ( "+Data[i][3]+" )";
-      sfbmtable.push(["C.Moment",Data[i][1],0,Data[i][3]]);
-    }
-  }
-  eqns[1][2]=Number(eval(F.replace(/\=/g,"+").replace(/sin\(/g,"Math.sin(Math.PI/180*").replace(/cos\(/g,"Math.cos(Math.PI/180*").replace(/Ra/g,0).replace(/Rb/g,0)));
-  eqns[2][2]=Number(eval(M.replace(/\=/g,"+").replace(/sin\(/g,"Math.sin(Math.PI/180*").replace(/cos\(/g,"Math.cos(Math.PI/180*").replace(/Ra/g,0).replace(/Rb/g,0)));
-  let Ra=0,Rb=0,Rax=0,D=0,Reactions=[];
-  if(cantilever==false){
-    //Cramer's rule
-    D=(eqns[1][0]*eqns[2][1]-eqns[2][0]*eqns[1][1]);
-    Ra=Number(((eqns[1][2]*eqns[2][1]-eqns[2][2]*eqns[1][1])/D));
-    Rb=Number(((eqns[1][0]*eqns[2][2]-eqns[2][0]*eqns[1][2])/D));
-    Reactions=[["Ra","Rb"],[Ra,Rb]];
-    Data[MPI][3]=-Ra;
-    sfbmtable.push(["A.Hinged/Fixed Support",Number(Data[MPI][1]),Ra,"",""]);
-    let MPI2=Data.col(0).indexOf("Roller Support");
-    if(MPI2>-1){Data[MPI2][3]=-Rb;sfbmtable.push(["A.Roller Support",Number(Data[MPI2][1]),Rb,"",""]);}
-    sidh("_cw_LoadData",JSON.stringify(Data));
-    sfbmtable=sortByColumn_(sfbmtable, 0,1);
-    sfbmtable=sortByColumn_(sfbmtable, 1,1);
-    //for(let x=0;x<=sfbmtable[sfbmtable.length-1][1];x=x+0.1){
-    //  sfbmdata[0].push(x);sfbmdata[1].push(0);sfbmdata[2].push(0);
-    //}
-  }
-      
-  //refreshSFDBMD();
-  show_LoadTable();
-  let sfbmdata=[["Distance ('x' m)",0],["Shearing Force (KN)",0],["Bending Moment (kN-m)",0]];
-  let DataSFBM=[["Distance ('x' m)"]];
-  let DataSF2=[["Distance ('x' m)",0],["Shearing Force (KN)",0]];
-  let MaxX=gidh("_cw_MaxX");
-  for(let i=1;i<sfbmtable.length;i++){DataSFBM.push(["SF_"+sfbmtable[i][0]]);}
-  for(let i=1;i<DataSFBM.length;i++){
-  	for(let j=0;j<=MaxX*10;j++){
-  		if(i==1){DataSFBM[0][Number(j)+1]=(j*0.1).toFixed(1);}
-  		DataSFBM[i][Number(j)+1]="";
-  	}
-  }
-  for(let i=1;i<sfbmtable.length;i++){
-  	if(sfbmtable[i][0].indexOf("Distributed Load")>-1){
-  		//console.log("Distributed Load");
-      let w1=sfbmtable[i][2],w2=sfbmtable[i][4],x2=Number(sfbmtable[i][3]),x1=Number(sfbmtable[i][1]);
-      let l=Number(x2)-Number(x1);
-      DataSFBM[i][DataSFBM[0].indexOf((Number(x1)).toFixed(1)+"")]=Number(0).toFixed(4);
-      let Oldloadatx=0;
-      for(let i1=1;i1<=(x2-x1)*10;i1++){
-        //find load at x
-        let x=(i1*0.1).toFixed(1);
-       	let loadatx=(Number(w1)*Number(x)+(w2-w1)*x*x/(2*l));  //.toFixed(4);
-        //console.log("x = "+x+"  w1= "+w1+"  w2= "+w2+"  l= "+l+"  (udl vl V)="+(Number(w1)*Number(x)).toFixed(4)+"  "+((w2-w1)*x*x/(2*l)).toFixed(4)+"   "+loadatx);
-        //let oldval=DataSFBM[i][DataSFBM[0].indexOf((Number(x1)+Number(x)-0.1).toFixed(1)+"")]
-        DataSFBM[i][DataSFBM[0].indexOf((Number(x1)+Number(x)).toFixed(1)+"")]=-(Number(loadatx)-Number(Oldloadatx)).toFixed(5);
-        Oldloadatx = Number(loadatx);
-      }
-  	}else{
-  		let w=sfbmtable[i][2],x1=sfbmtable[i][1];
-  		if(sfbmtable[i][0].indexOf("Support")==-1){w=-w;}
-  		DataSFBM[i][DataSFBM[0].indexOf((Number(x1)).toFixed(1)+"")]=Number(w).toFixed(5);
-  	}
-  }
-  DataSFBM.push(["Shear Force"]);DataSFBM.push(["Bending Moment"]);
-  for(let j=1;j<DataSFBM[0].length;j++){
-   	let SF=0,BM=0,SF0=0,SF2=0;
-  	if(j>1){SF0=DataSFBM[DataSFBM.length-2][j-1];}
-  	//console.log("j = "+j+"   BM = 0    "+Number(DataSFBM[0][j]));
-  	for(let i=1;i<DataSFBM.length-2;i++){
-  		//let v=DataSFBM[i][j];
-  		//if(v==null || v==""){v=0;}
-  		//console.log("SF  == "+Number(SF))
-  		SF = Number(SF)+Number(DataSFBM[i][j]);
-  		let multipleEntries=0;
-  		//for(let i1=1;i1<DataSFBM.length-2;i1++){if(Number(Math.abs(DataSFBM[i1][j]))>0){multipleEntries++;}}
-  		for(let i1=1;i1<DataSFBM.length-2;i1++){if(DataSFBM[i1][j].toString().length>0){multipleEntries++;}}
-  		if(j==DataSFBM[0].length-1){multipleEntries=2;}
-  		//if(multipleEntries>1){console.log("j = "+j+"   multipleEntries= "+multipleEntries+"  DataSF2[1][DataSF2[1].length-1] = "+DataSF2[1][DataSF2[1].length-1]);}
-  		if(Number(Math.abs(DataSFBM[i][j]))>0){
-  			if(multipleEntries>1 && DataSFBM[i][0].indexOf("Distributed Load")==-1){DataSF2[0].push(DataSFBM[0][j]);DataSF2[1].push(Number(DataSF2[1][DataSF2[1].length-1]));}
-  			DataSF2[0].push(DataSFBM[0][j]);DataSF2[1].push(Number(DataSF2[1][DataSF2[1].length-1])+Number(DataSFBM[i][j]));
-  		}
-  		//if(j==26){console.log("BM  -->  "+BM);}
-  		for(let j1=1;j1<=j;j1++){ 
-  			if(DataSFBM[i][0].indexOf("Distributed Load")>-1){
-  				let w1=sfbmtable[i][2],w2=sfbmtable[i][4],x2=Number(sfbmtable[i][3]),x1=Number(sfbmtable[i][1]);
-  				let l=Number(x2)-Number(x1);
-  				let x=DataSFBM[0][j];
-  				//console.log("x = "+x+"    x2 = "+x2);
-  				if(x>=x1){
-						if(Number(x)<=Number(x2)){
-							BM = Number(BM)-(w1*(x-x1)**2/2)-(w2-w1)*(x-x1)**3/(6*l);
-						}else{
-						//  //BM = Number(BM)-(w1*l*(x-x2-(l/2))+(1/2)*l*(w2-w1)*(2/3)*(x-x2-l/3));
-						  BM = Number(BM)-(w1*l*(x-(Number(x1)+Number(x2))/2))-((1/6)*l*(w2-w1)*(3*x-x1-2*x2));
-						  //console.log("x="+x+"    BM = "+BM+" (w1*l*(x-(Number(x1)+Number(x2))/2))/2 = "+(w1*l*(x-(Number(x1)+Number(x2))/2))/2);
-						}
-  				}
-  				//if(j<3){console.log("BM_ = "+BM);}
-  				j1=j+1;
-  				
-  				//let avgLoad=DataSFBM[i][j1],ladj=0;
-  				//if(j1==DataSFBM[0].length-1){ladj=0.1;}
-  				//BM = Number(BM)+Number(avgLoad)*(Number(DataSFBM[0][j])-Number(DataSFBM[0][j1])+Number(ladj));
-  			}else{
-  				BM = Number(BM)+Number(DataSFBM[i][j1])*(Number(DataSFBM[0][j])-Number(DataSFBM[0][j1]));
-  			}
-  			//if(j<3){console.log("i = "+i+"   j1 = "+j1+"  BM="+BM+"  "+Number(DataSFBM[i][j1])*(Number(DataSFBM[0][j])-Number(DataSFBM[0][j1]))+" =   "+Number(DataSFBM[i][j1])+" * ("+Number(DataSFBM[0][j])+" - "+Number(DataSFBM[0][j1])+")");}
-  		}
-  		//for(let j1=Number(j)+1;j1<DataSFBM[0].length;j1++){BM = Number(BM)+Number(DataSFBM[i][j1])*(Number(DataSFBM[0][j])-Number(DataSFBM[0][j1]));}
-  	}
-  	if(DataSF2[0].indexOf(DataSFBM[0][j])==-1){DataSF2[0].push(DataSFBM[0][j]);DataSF2[1].push(DataSF2[1][DataSF2[1].length-1]);}
-  	//console.log("BM = "+BM);
-  	DataSFBM[DataSFBM.length-2][j]=(Number(SF0)+Number(SF)).toFixed(4);
-  	DataSFBM[DataSFBM.length-1][j]=(Number(BM)).toFixed(4);
-  }
-  let GraphData=[DataSFBM[0],DataSFBM[DataSFBM.length-2]];
-  for(let i=1;i<DataSFBM.length-2;i++){
-  	if(DataSFBM[i][0].indexOf("Support")>-1 && Number(DataSFBM[i][DataSFBM[0].length-1])>0){
-  		DataSFBM[DataSFBM.length-2][DataSFBM[0].length-1]=Number(DataSFBM[DataSFBM.length-2][DataSFBM[0].length-1])-Number(DataSFBM[i][DataSFBM[0].length-1]);
-  	}
-  }
-/*	GraphData=Transpose_(GraphData);
-	GraphData.splice(1,0,[0,0]);
-	GraphData.push([GraphData[GraphData.length-1][0],0]);
-	//showGraph(GraphData,"_cw_showSFD");
-	showGraphOnCanvas(GraphData,"_cw_showSFD2","showSFD");*/
-  GraphData=[DataSFBM[0],DataSFBM[DataSFBM.length-1]];
+  var rObj = await gsrfn("fn=sfd_bmd_Table&Data="+JSON.stringify(Data)+"&MaxX="+gidh("_cw_MaxX")+"");
+  //console.log(rObj);
+  
+	sidh("_cw_LoadData",JSON.stringify(rObj.Data));
+	show_LoadTable();
+	sidh("sfd_bmd_solution",rObj.text2);
+	GraphData=[rObj.DataSFBM[0],rObj.DataSFBM[rObj.DataSFBM.length-1]];
+	//console.log(GraphData);
 	GraphData=Transpose_(GraphData);
 	GraphData.splice(1,0,[0,0]);
 	GraphData.push([GraphData[GraphData.length-1][0],0]);
 	//showGraph(GraphData,"_cw_showBMD");
 	showGraphOnCanvas(GraphData,"_cw_showBMD2","showBMD");
 	
-	GraphData=Transpose_(DataSF2);
+	//console.log(rObj.DataSF2);
+	GraphData=Transpose_(rObj.DataSF2);
 	GraphData.splice(1,0,[0,0]);
 	GraphData.push([GraphData[GraphData.length-1][0],0]);
 	showGraphOnCanvas(GraphData,"_cw_showSFD2","showSFD2");
 	
 	
-	for(let i=1;i<GraphData.length;i++){GraphData[i][0]=Number(GraphData[i][0]);GraphData[i][1]=Number(GraphData[i][1]);}
-
-  let text2="";
-  text2 += "Total Vertical Downward Force is zero.Therefore,<br>"+F
-  text2 += "<br>"+udlCentroid;
-  text2 += "<br>"+udlCentroid2;
-  text2 += "<br>"+udlCentroid3;
-  text2 += "<br>"+"Total Clockwise Moment about Hinged/Fixed Support location is zero.Therefore,<br>"+M;
-  text2 += "<br>"+SimpleD2T(eqns,"eqns");
-  text2 += "<br>"+SimpleD2T(Reactions,"reactions");
-  text2 += "<br>"+SimpleD2T(sfbmtable,"sfbm");
-  //text2 += "<br>"+SimpleD2T(sfbmdata,"sfbmdata");
-  text2 += "<br>"+SimpleD2T(DataSFBM,"DataSFBM");
-  text2 += "<br>"+SimpleD2T(DataSF2,"DataSF2");
+	//for(let i=1;i<GraphData.length;i++){GraphData[i][0]=Number(GraphData[i][0]);GraphData[i][1]=Number(GraphData[i][1]);}
   
-  sidh("sfd_bmd_solution",text2);
 }
 function SampleProblems(ProbNo){
 	
@@ -653,10 +479,6 @@ End Magnitude </td><td><input type="text" id="_cw_EndMagnitude" value="" > kN-m
 
 
 
-<!--- <div id="_cw_LoadData" >[["Type","Start/Point Position (m)","End Position (m)","Start/Point Magnitude (kN/m)","End Magnitude (kN/m)","Direction"],["","","","","",""],["Beam",0,"7","","",""],["Hinged Support","0","","","",""],["Roller Support","7","","","",""],["Point Load","5","","75","","60"],["Moment","6","","25","","C"],["Distributed Load","1","4","50","70",""]]</div>
---->
-<!--- <div id="_cw_LoadData" >[["Type","Start/Point Position (m)","End Position (m)","Start/Point Magnitude (kN/m)","End Magnitude (kN/m)","Direction"],["","","","","",""],["Beam",0,"9","","",""],["Hinged Support","0","",-9.629629629629632,"",""],["Roller Support","9","",-10.370370370370368,"",""],["Distributed Load","2","6","0","10",""]]</div>
---->
 <div id="_cw_LoadData" >[["Type","Start/Point Position (m)","End Position (m)","Start/Point Magnitude (kN/m)","End Magnitude (kN/m)","Direction"],["","","","","",""],["Beam",0,"9","","",""],["Hinged Support","0","",-22.22222222222222,"",""],["Roller Support","9","",-17.77777777777778,"",""],["Distributed Load","2","6","10","10",""]]</div>
 <div id="_cw_MaxX" hidden ></div><div id="_cw_MaxY" hidden ></div><div id="_cw_MinY" hidden ></div><div id="tempvals"  ></div><div id=sfd_bmd_solution></div><div id="contraflexure" ></div>
 <div id="target_id"></div>
