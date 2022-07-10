@@ -2,7 +2,74 @@
 <html>
 <head>
 <style>
-.input-button {width:100px;}
+  body {
+    margin:5px;
+    padding:0;
+    font-size:14px;
+    /*background:url(https://login.ameonlinesolutions.com/images/AMELogo-Watermark.jpg);*/
+    background:url(https://login.ameonlinesolutions.com/images/AMELogo-Watermark4.jpg);
+    background-repeat:repeat;
+    background-color:#FEF5E7;        
+  }
+	.button {
+		background-color: #008CBA; /* Blue */
+		border: none;
+		color: white;
+		padding: 5px 12px;
+		text-align: center;
+		text-decoration: none;
+		display: inline-block;
+		font-size: 16px;
+		margin: 4px 2px;
+		cursor: pointer;
+		width:200px;
+	}
+	.button1 {background-color: #4CAF50;} /* Green */
+	.button3 {background-color: #f44336;} /* Red */ 
+
+	.BackgroundPattern1{
+  	color:white;
+  	background-image: linear-gradient(45deg, transparent 20%, black 25%, transparent 25%), 
+                    linear-gradient(-45deg, transparent 20%, black 25%, transparent 25%), 
+                    linear-gradient(-45deg, transparent 75%, black 80%, transparent 0),
+                    radial-gradient(gray 2px, transparent 0);
+  	background-size: 30px 30px, 30px 30px;
+  	background-color:#b47800;
+  	background-size:12px 12px;
+	}
+	// **************************  spin image   *************************
+	.spinimage {
+	  -webkit-animation:spin 4s linear infinite;
+	  -moz-animation:spin 4s linear infinite;
+	  animation:spin 4s linear infinite;
+	}
+	@-moz-keyframes spin { 100% { -moz-transform: rotate(360deg); } }
+	@-webkit-keyframes spin { 100% { -webkit-transform: rotate(360deg); } }
+	@keyframes spin { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } }
+	.rotateimage{
+	  display:block;
+	  -webkit-animation: rotation 7s infinite linear;
+	}
+	.spinme{
+	  display:block;
+	  -webkit-animation: spin 7s infinite linear;
+	}
+
+	@-webkit-keyframes rotation {
+	  from {
+	    -webkit-transform: rotateY(90deg);
+	    -moz-transform: rotateY(90deg);
+	    -o-transform: rotateY(90deg);
+	    transform: rotateY(90deg);	
+	  }
+	  to {
+	    -webkit-transform: rotateY(-90deg);
+	    -moz-transform: rotateY(-90deg);
+	    -o-transform: rotateY(-90deg);
+	    transform: rotateY(-90deg);	
+	  }
+	}
+
 </style>
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
@@ -73,19 +140,9 @@ $(document).ready(function(){
   });
 });
 
-function show_LoadTable(appendRow){
-  let Data=[["Type", "Start/Point Position (m)", "End Position (m)", "Start/Point Magnitude (kN/m)", "End Magnitude (kN/m)","Direction"],["","","","","",""]];
-  if(gidh("_cw_LoadData")!=""){Data=JSON.parse(gidh("_cw_LoadData"));}
-  if(appendRow!=null){Data.push(appendRow);sidh("_cw_LoadData",JSON.stringify(Data));}
-  document.getElementById("_cw_showLoadTable").innerHTML = SimpleD2T(Data,"tableid");
-  let selectElement=gid("_cw_RemoveRow");
-  while (selectElement.length > 0) {selectElement.remove(0);}
-  for(let i=2;i<Data.length;i++){selectElement.add(new Option(Data[i].join("_"), Data[i].join("_")));}
-}
 
 
 function Transpose_(array){
-  console.log(array);
   return array[0].map(function(col, i) { return array.map(function(row) { return row[i] }) });
 }
 async function gsrfn(query)
@@ -93,7 +150,8 @@ async function gsrfn(query)
 	var p="https://script.google.com/macros/s/AKfycbyH2V4BDffuvygU_jyhmyJvFIGjj6LlNXLVHWMyubsw7960mI06/exec?"+query;
 	var obj;
 	await fetch(p).then(res=>res.text().then(res => {
-  		obj = JSON.parse(res);
+		//document.getElementById(target_id).innerHTML=res;
+		obj = JSON.parse(res);
 	}));
 	return obj;
 }
@@ -348,6 +406,16 @@ function SampleProblems(ProbNo){
 		default: alert(ProbNo);break;
 	}
 }
+function show_LoadTable(appendRow){
+  let Data=[["Type", "Start/Point Position (m)", "End Position (m)", "Start/Point Magnitude (kN/m)", "End Magnitude (kN/m)","Direction"],["","","","","",""]];
+  if(gidh("_cw_LoadData")!=""){Data=JSON.parse(gidh("_cw_LoadData"));}
+  if(appendRow!=null){Data.push(appendRow);sidh("_cw_LoadData",JSON.stringify(Data));}
+  document.getElementById("_cw_showLoadTable").innerHTML = SimpleD2T(Data,"tableid");
+  let selectElement=gid("_cw_RemoveRow");
+  while (selectElement.length > 0) {selectElement.remove(0);}
+  for(let i=2;i<Data.length;i++){selectElement.add(new Option(Data[i].join("_"), Data[i].join("_")));}
+}
+
 function refreshSFDBMD(){
   sidh("sfd_bmd_solution","");
   show_LoadTable();
@@ -364,30 +432,38 @@ function refreshSFDBMD(){
 </script>
 </head>
 <body>
+<table  id="headertable" class=BackgroundPattern1 style="width:100%;border-collapse: collapse; border: none;padding:0em;margin:0px;">
+  <tr>
+  <td style="padding:0px;width:40px;"><span id="cLogo"><img class='rotateimage' src="https://login.ameonlinesolutions.com/images/AMELogo.png" alt='' style=float:left;width:40px;height:40px;border-radius:18px;border:1px solid #fff;display: block;' ></span></td>
+  <td style="padding:0px;" align=left nowrap><span id="cName">&nbsp;<font color=white style='font-family: Impact, serif, Charcoal;font-size:30px;'>AME Online Solutions</font></span></td>
+  </tr>
+  </table>
+  
 <div id="_cw_MainDiv" align=center>
+<div align=center><h1>Shear Force Diagram and Bending Moment Diagram</h1></div>
 <table border=1>
 <tr><td>
-<button id="_cw_addBeam" >Add Beam</button><br>
-<button id="_cw_addSupport" >Add Support</button><br>
-<button id="_cw_addPointLoad" >Add Point Load</button><br>
-<button id="_cw_addMoment" >Add Moment</button><br>
-<button id="_cw_addDistributedLoad" >Add Distributed load</button>
+<button id="_cw_addBeam" class="button" >Add Beam</button><br>
+<button id="_cw_addSupport" class="button" >Add Support</button><br>
+<button id="_cw_addPointLoad" class="button" >Add Point Load</button><br>
+<button id="_cw_addMoment" class="button" >Add Moment</button><br>
+<button id="_cw_addDistributedLoad" class="button" >Add Distributed load</button>
 <br><br><br>
-<select name="_cw_RemoveRow" id="_cw_RemoveRow"><option value=" "> </option></select>
-<br><button id="_cw_RemoveIt" >Remove It</button>
+<select name="_cw_RemoveRow" id="_cw_RemoveRow" class="button button3" ><option value=" "> </option></select>
+<br><button id="_cw_RemoveIt" class="button button3" >Remove It</button>
 </td><td><div align=center id="_cw_LoadFigure" style="width:600px;height:400px;" ></div>
 </td></tr><td>
 Sample Problems<br>
-<button name="SampleProblems" value=1>ssb-Point Load</button><br>
-<button name="SampleProblems" value=2>ssb-Inclined Point Load</button><br>
-<button name="SampleProblems" value=3>ssb-udl</button><br>
-<button name="SampleProblems" value=4>ssb-Uniformly Varying Load</button><br>
-<button name="SampleProblems" value=5>ssb-Combination 1</button><br>
-<button name="SampleProblems" value=6>ssb-Combination 2</button><br>
-<button name="SampleProblems" value=7>ssb-Combination 3</button><br>
-<button name="SampleProblems" value=8>ssb-Combination 4</button><br>
-<button name="SampleProblems" value=9>ssb-Combination 5</button><br>
-<button name="SampleProblems" value=10>ssb-Combination 6</button><br>
+<button name="SampleProblems" value=1 class="button" >ssb-Point Load</button><br>
+<button name="SampleProblems" value=2 class="button" >ssb-Inclined Point Load</button><br>
+<button name="SampleProblems" value=3 class="button" >ssb-udl</button><br>
+<button name="SampleProblems" value=4 class="button" >ssb-Uniformly Varying Load</button><br>
+<button name="SampleProblems" value=5 class="button" >ssb-Combination 1</button><br>
+<button name="SampleProblems" value=6 class="button" >ssb-Combination 2</button><br>
+<button name="SampleProblems" value=7 class="button" >ssb-Combination 3</button><br>
+<button name="SampleProblems" value=8 class="button" >ssb-Combination 4</button><br>
+<button name="SampleProblems" value=9 class="button" >ssb-Combination 5</button><br>
+<button name="SampleProblems" value=10 class="button" >ssb-Combination 6</button><br>
 </td><td>
 <div id="_cw_showSFD2" style="width:600px;height:400px;"></div>
 </td></tr><td></td><td>
@@ -424,7 +500,7 @@ Beam Length </td><td><input type="text" id="_cw_beamLength" value="" > m</td></t
 Position <input type="text" id="_cw_SupportPosition" value="" > m <button tabindex="-1" >L</button> <button tabindex="-1" >R</button>
 </td></tr><td colspan=2>
 <button id="_cw_addSupport_cancel"  >Cancel</button></td><td>
-<button id="_cw_addSupport_Add" >Add</button>
+<button id="_cw_addSupport_Add" class="button button1" >Add</button>
 </td></tr></table>
 </div>
 
@@ -435,7 +511,7 @@ Load Location </td><td><input type="text" id="_cw_LoadLocation" value="" > m</td
 Load Magnitude</td><td><input type="text" id="_cw_LoadMagnitude" value="" > kN</td></tr><tr><td>
 Load Direction </td><td><input type="text" id="_cw_LoadDirection" value="90" > &#176; </td></tr><tr><td>
 <button id="_cw_addPointLoad_cancel"  >Cancel</button></td><td>
-<button id="_cw_addPointLoad_Add" >Add</button>
+<button id="_cw_addPointLoad_Add" class="button button1" >Add</button>
 </td></tr></table>
 </div>
 
@@ -450,7 +526,7 @@ Moment Direction </td><td><select name="_cw_MomentDirection" id="_cw_MomentDirec
 </select>
 </td></tr><tr><td>
 <button id="_cw_addMoment_cancel"  >Cancel</button></td><td>
-<button id="_cw_addMoment_Add" >Add</button> 
+<button id="_cw_addMoment_Add" class="button button1" >Add</button> 
 </td></tr></table>
 </div>
 
@@ -461,9 +537,8 @@ End Position </td><td><input type="text" id="_cw_EndPosition" value="" > kN-m</t
 Start Magnitude </td><td><input type="text" id="_cw_StartMagnitude" value="" > kN-m</td></tr><tr><td>
 End Magnitude </td><td><input type="text" id="_cw_EndMagnitude" value="" > kN-m
 </td></tr><tr><td>
-<button id="_cw_addMoment_cancel"  >Cancel</button>
-<button id="_cw_addMoment_Add" >Add</button> </td><td>
-</td></tr></table>
+<button id="_cw_addMoment_cancel"  >Cancel</button></td><td>
+<button id="_cw_addMoment_Add"  class="button button1" >Add</button> </td></tr></table>
 </div>
 
 
@@ -472,17 +547,13 @@ End Magnitude </td><td><input type="text" id="_cw_EndMagnitude" value="" > kN-m
 
 
 
-
-
-
-
-
-
 <div id="_cw_LoadData" >[["Type","Start/Point Position (m)","End Position (m)","Start/Point Magnitude (kN/m)","End Magnitude (kN/m)","Direction"],["","","","","",""],["Beam",0,"9","","",""],["Hinged Support","0","",-22.22222222222222,"",""],["Roller Support","9","",-17.77777777777778,"",""],["Distributed Load","2","6","10","10",""]]</div>
 <div id="_cw_MaxX" hidden ></div><div id="_cw_MaxY" hidden ></div><div id="_cw_MinY" hidden ></div><div id="tempvals"  ></div><div id=sfd_bmd_solution></div><div id="contraflexure" ></div>
+<div id="target_id"></div>
 <script>
   refreshSFDBMD();
 </script>
 </div>
+<footer><section style="border-top: 1px solid black;margin-top: 10px;padding-top: 5px;font-size: 14px;font-weight: bold;">© <!-- -->2017<!-- -->-<!-- -->2022<!-- --> <!-- -->AME Online Solutions<!-- -->, All rights reserved.</section></footer>
 </body>
 </html>
