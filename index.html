@@ -93,8 +93,7 @@ async function gsrfn(query)
 	var p="https://script.google.com/macros/s/AKfycbyH2V4BDffuvygU_jyhmyJvFIGjj6LlNXLVHWMyubsw7960mI06/exec?"+query;
 	var obj;
 	await fetch(p).then(res=>res.text().then(res => {
-		//document.getElementById(target_id).innerHTML=res;
-		obj = JSON.parse(res);
+  		obj = JSON.parse(res);
 	}));
 	return obj;
 }
@@ -481,7 +480,6 @@ End Magnitude </td><td><input type="text" id="_cw_EndMagnitude" value="" > kN-m
 
 <div id="_cw_LoadData" >[["Type","Start/Point Position (m)","End Position (m)","Start/Point Magnitude (kN/m)","End Magnitude (kN/m)","Direction"],["","","","","",""],["Beam",0,"9","","",""],["Hinged Support","0","",-22.22222222222222,"",""],["Roller Support","9","",-17.77777777777778,"",""],["Distributed Load","2","6","10","10",""]]</div>
 <div id="_cw_MaxX" hidden ></div><div id="_cw_MaxY" hidden ></div><div id="_cw_MinY" hidden ></div><div id="tempvals"  ></div><div id=sfd_bmd_solution></div><div id="contraflexure" ></div>
-<div id="target_id"></div>
 <script>
   refreshSFDBMD();
 </script>
