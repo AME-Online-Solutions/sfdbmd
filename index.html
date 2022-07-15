@@ -534,9 +534,9 @@ Sample Problems<br>
 <!---  Hidden Forms  --->
 <div id="_cw_addBeamHidden" hidden align=center>
 <br><br><br><br><br><br><table border=1 style="border-collapse:collapse;" ><tr><td>
-Beam Length </td><td><input type="number" min=1 max=50 id="_cw_beamLength" value=10 >m</td></tr><tr><td>
+Beam Length </td><td><input type="number" min=1 max=50 id="_cw_beamLength" value=10 > m</td></tr><tr><td>
 <button id="_cw_addBeam_cancel"  >Cancel</button></td><td>
-<button id="_cw_addBeam_Add" >Add</button> 
+<button id="_cw_addBeam_Add" class="button button1" >Add</button> 
 </td></tr></table>
 </div>
 
@@ -550,7 +550,7 @@ Beam Length </td><td><input type="number" min=1 max=50 id="_cw_beamLength" value
 </td><td>
 <input type="radio" id="fixed_support" name="support_choice" value="Fixed Support"> Fixed Support<br><img src="https://platform.skyciv.com/storage/images/beam/fixed_support_diagram.gif">
 </td></tr><tr><td colspan=3>
-Position <input type="text" id="_cw_SupportPosition" value="" > m <button tabindex="-1" >L</button> <button tabindex="-1" >R</button>
+Position <input type="number" id="_cw_SupportPosition" min=0 max=50 value="0" > m <!--<button tabindex="-1" >L</button> <button tabindex="-1" >R</button> -->
 </td></tr><td colspan=2>
 <button id="_cw_addSupport_cancel"  >Cancel</button></td><td>
 <button id="_cw_addSupport_Add" class="button button1" >Add</button>
@@ -586,9 +586,9 @@ Moment Direction </td><td><select name="_cw_MomentDirection" id="_cw_MomentDirec
 <div id="_cw_addDistributedLoadHidden" hidden align=center>
 <br><br><br><br><br><table border=1 style="border-collapse:collapse;" ><tr><td>
 Start Position </td><td><input type="text" id="_cw_StartPosition" value="" > m</td></tr><tr><td>
-End Position </td><td><input type="text" id="_cw_EndPosition" value="" > kN-m</td></tr><tr><td>
+End Position </td><td><input type="text" id="_cw_EndPosition" value="" > kN/m</td></tr><tr><td>
 Start Magnitude </td><td><input type="text" id="_cw_StartMagnitude" value="" > kN-m</td></tr><tr><td>
-End Magnitude </td><td><input type="text" id="_cw_EndMagnitude" value="" > kN-m
+End Magnitude </td><td><input type="text" id="_cw_EndMagnitude" value="" > kN/m
 </td></tr><tr><td>
 <button id="_cw_addMoment_cancel"  >Cancel</button></td><td>
 <button id="_cw_addMoment_Add"  class="button button1" >Add</button> </td></tr></table>
