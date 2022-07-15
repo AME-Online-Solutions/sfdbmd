@@ -143,6 +143,7 @@ $(document).ready(function(){
 
 
 function Transpose_(array){
+  if(array==null || array==[] || array.length==0 ){return array;}
   return array[0].map(function(col, i) { return array.map(function(row) { return row[i] }) });
 }
 async function gsrfn(query)
@@ -270,8 +271,28 @@ function draw_DistributedLoad(ctx,p1,p2){  //distributed load
 }
 
 function draw_Beam(ctx,p0,rowContents){
+  //console.log(JSON.stringify(rowContents));
   ctx.beginPath();ctx.lineWidth = 5;ctx.lineCap = "butt";ctx.moveTo(p0.x, p0.y);ctx.lineTo(p0.x+Number(rowContents[2])*p0.scaleX, p0.y);ctx.stroke();ctx.lineWidth=3;
 }
+function showLandmarks(ctxSFBM,x,y,scaleX,scaleY,X1){
+  Yd=370;
+  ctxSFBM.beginPath(); ctxSFBM.moveTo(x, Yd); ctxSFBM.lineTo(X1+20, Yd); ctxSFBM.stroke(); 
+  ctxSFBM.beginPath(); ctxSFBM.moveTo(X1+15, Yd-5); ctxSFBM.lineTo(X1+20, Yd); ctxSFBM.lineTo(X1+15, Yd+5); ctxSFBM.stroke(); 
+  let Landmarks=JSON.parse(gidh("_cw_Landmarks"));
+  if(Landmarks!=null && Landmarks.length>0){
+  	for(let i=0;i<Landmarks.length;i++){
+  	  ctxSFBM.beginPath(); ctxSFBM.moveTo(Number(x)+Number(Landmarks[i])*scaleX, Yd-3); ctxSFBM.lineTo(Number(x)+Number(Landmarks[i])*scaleX, Yd+3); ctxSFBM.stroke(); 
+  	  draw_text(ctxSFBM,{x:Number(x)+Number(Landmarks[i])*scaleX,y:Yd+20},Number(Landmarks[i]).toFixed(2));
+  	  draw_text(ctxSFBM,{x:Number(x)+Number(Landmarks[i])*scaleX,y:Yd-10},String.fromCharCode(64+i));
+  	}
+  }
+  
+}
+//function sfd_intercept(ctxSFBM,x,y,scaleX,scaleY,interceptX,Yd){
+//	console.log(interceptX);
+	//ctxSFBM.beginPath(); ctxSFBM.moveTo(Number(x)+Number(interceptX)*scaleX, Yd-3); ctxSFBM.lineTo(Number(x)+Number(interceptX)*scaleX, Yd+3); ctxSFBM.stroke(); 
+//	draw_text(ctxSFBM,{x:Number(x)+Number(interceptX)*scaleX,y:Yd-15},interceptX.toFixed(3));
+//}
 function showGraphOnCanvas(GraphData,GraphId,CId){
   //console.log(GraphData);
   GraphData.shift();
@@ -286,14 +307,18 @@ function showGraphOnCanvas(GraphData,GraphId,CId){
   }
   //console.log("MinX = "+MinX+"  MaxX="+MaxX+"   MinY = "+MinY+"  MaxY="+MaxY);
   let scaleX=500/MaxX,scaleY=200/(MaxY-MinY),x=50,y=50+MaxY*scaleY;  //300-MinY200/(MaxY-MinY);
+  let Yd=370;
   //console.log("scaleX = "+scaleX+"  scaleY="+scaleY+"   x = "+x+"  y="+y);
-  sidh(GraphId,'<canvas id="'+CId+'" width="600" height="400" >Your browser does not support the HTML5 canvas tag.</canvas>');
+  sidh(GraphId,'<canvas id="'+CId+'" width="600" height="400" style="border:1px solid #d3d3d3;background:white;">Your browser does not support the HTML5 canvas tag.</canvas>');
   let c = document.getElementById(CId);let ctxSFBM = c.getContext("2d");
+  //ctxSFBM.globalAlpha = 0.2;
   let Y=y;
   let X=Number(MaxX); let X1=x+X*scaleX; 
   //ctxSFBM.beginPath(); ctxSFBM.moveTo(x, Y+2); ctxSFBM.lineTo(x, Y+18); ctxSFBM.stroke();   
   ctxSFBM.beginPath(); ctxSFBM.moveTo(x, Y); ctxSFBM.lineTo(X1+20, Y); ctxSFBM.stroke(); 
   ctxSFBM.beginPath(); ctxSFBM.moveTo(X1+15, Y-5); ctxSFBM.lineTo(X1+20, Y); ctxSFBM.lineTo(X1+15, Y+5); ctxSFBM.stroke(); 
+  
+  showLandmarks(ctxSFBM,x,y,scaleX,scaleY,X1)
    //X=Number(MaxX);X1=x+X*scaleX;ctxSFBM.beginPath(); ctxSFBM.moveTo(X1, Y+2); ctxSFBM.lineTo(X1, Y+18); ctxSFBM.stroke(); draw_text(ctxSFBM,{x:X1-10,y:Y+30},X);
    //plot
   ctxSFBM.beginPath(); ctxSFBM.moveTo(Number(x)+GraphData[0][0]*scaleX, Number(y)+GraphData[0][1]*scaleY);
@@ -301,13 +326,28 @@ function showGraphOnCanvas(GraphData,GraphId,CId){
    	sidh("contraflexure","");
    	ctxSFBM.lineTo(Number(x)+GraphData[i][0]*scaleX, Number(y)-GraphData[i][1]*scaleY);
    	if(i==0 || i==GraphData.length-1){draw_text(ctxSFBM,{x:Number(x)+GraphData[i][0]*scaleX+3,y:Number(y)-GraphData[i][1]*scaleY+15},GraphData[i][0]);}
-   	if(i>0 && GraphData[i][1]*GraphData[i-1][1]<0){
+   	/*if(i>0 && GraphData[i][1]*GraphData[i-1][1]<0){
    		//intersepting x axis
    		let interceptX=(GraphData[i][0]-GraphData[i-1][0])*GraphData[i-1][1]/(GraphData[i][1]-GraphData[i-1][1]);
    		interceptX=Number(interceptX)+Number(GraphData[i-1][0]);
-   		draw_text(ctxSFBM,{x:Number(x)+Number(interceptX)*scaleX+3,y:Number(y)+15},interceptX.toFixed(3));
+   		console.log("interceptX = "+interceptX+"   GraphId = "+GraphId);
+   		if(GraphId.indexOf("SFD")>-1){
+   		  ctxSFBM.moveTo(Number(x)+Number(interceptX)*scaleX, Yd-3); ctxSFBM.lineTo(Number(x)+Number(interceptX)*scaleX, Yd+3);
+   		  draw_text(ctxSFBM,{x:Number(x)+Number(interceptX)*scaleX,y:Yd-10},interceptX.toFixed(3));
+   		  ctxSFBM.moveTo(Number(x)+Number(interceptX)*scaleX, Number(y)-GraphData[i][1]*scaleY);
+   		}else{
+   			draw_text(ctxSFBM,{x:Number(x)+Number(interceptX)*scaleX+3,y:Number(y)+15},interceptX.toFixed(3));
+   		}
    	}
-    	if(i>0 && GraphData[i][1]==0){draw_text(ctxSFBM,{x:Number(x)+Number(GraphData[i][0])*scaleX+3,y:Number(y)-GraphData[i][1]*scaleY+15},GraphData[i][0]);}
+    if(i>0 && GraphData[i][1]==0){
+    	if(GraphId.indexOf("SFD")>-1){
+    		ctxSFBM.moveTo(Number(x)+Number(GraphData[i][0])*scaleX, Yd-3); ctxSFBM.lineTo(Number(x)+Number(GraphData[i][0])*scaleX, Yd+3);
+    		draw_text(ctxSFBM,{x:Number(x)+Number(GraphData[i][0])*scaleX,y:Yd-15},GraphData[i][0].toFixed(3));
+    		ctxSFBM.moveTo(Number(x)+Number(GraphData[i][0])*scaleX, Number(y)-GraphData[i][1]*scaleY);
+    	}else{
+	    	draw_text(ctxSFBM,{x:Number(x)+Number(GraphData[i][0])*scaleX+3,y:Number(y)-GraphData[i][1]*scaleY+15},GraphData[i][0]);
+	    }
+	  }*/
   	if(i>0 && i<GraphData.length-1 && (GraphData[i][1]-GraphData[i-1][1])*(GraphData[Number(i)+1][1]-GraphData[i][1])<0){
    		//Max/Min Value
    		draw_text(ctxSFBM,{x:Number(x)+Number(GraphData[i][0])*scaleX-4,y:Number(y)-GraphData[i][1]*scaleY-5},GraphData[i][1]);
@@ -322,7 +362,8 @@ function showGraphOnCanvas(GraphData,GraphId,CId){
 
 
 function show_FBD(){
-  sidh("_cw_LoadFigure",'<canvas id="myCanvas" width="600" height="400" >Your browser does not support the HTML5 canvas tag.</canvas>');
+  //console.log("sfbd");
+  sidh("_cw_LoadFigure",'<canvas id="myCanvas" width="600" height="400" style="border:1px solid #d3d3d3;background:white;">Your browser does not support the HTML5 canvas tag.</canvas>');
   var c = document.getElementById("myCanvas");var ctx = c.getContext("2d");
   let Data=JSON.parse(gidh("_cw_LoadData"));
   let DataCol1=Data.map(function(value,index) {return value[0];});
@@ -342,12 +383,13 @@ function show_FBD(){
   //console.log("MaxX = "+MaxX+"   MaxY ="+MaxY+"   MinY ="+MinY)
   sidh("_cw_MaxX",MaxX);sidh("_cw_MaxY",MaxY);sidh("_cw_MinY",MinY);
   if(Number(MinY)>0){MinY=0;}
+  if(MaxY==MinY){MaxY=100;}
   let p0={scaleX:500/MaxX,scaleY:200/(MaxY-MinY),x:50,y:300-MinY*200/(MaxY-MinY)};
   sidh("tempvals", p0.scaleX+" "+p0.scaleY+" "+p0.x+" "+p0.y)
   //console.log("p0.scaleX = "+p0.scaleX+" p0.scaleY="+p0.scaleY+"    p0.x="+p0.x+"   p0.y="+p0.y)
   show_dimensions(ctx,p0,Data);
   for(let i=2;i<Data.length;i++){
-  	if(Data[i][0]=="Beam"){draw_Beam(ctx,p0,Data[index]);};
+  	if(Data[i][0]=="Beam"){draw_Beam(ctx,p0,Data[i]);};
   	if(Data[i][0].indexOf("Support")>-1){draw_support(ctx,{type:Data[i][0].split(" ")[0],x:p0.x+p0.scaleX*Data[i][1],y:p0.y})};
   	if(Data[i][0]=="Moment"){draw_moment(ctx,{x:p0.x+p0.scaleX*Data[i][1],y:p0.y,dir:Data[i][5],m:Data[i][3]});};
   	if(Data[i][0]=="Point Load"){draw_pointLoad(ctx, {x:p0.x+p0.scaleX*Data[i][1],y:p0.y,l:Data[i][3],theta:Data[i][5],scaleY:p0.scaleY})};
@@ -355,13 +397,17 @@ function show_FBD(){
   }
   
 }
+
 async function sfd_bmd_Table(){
   let Data=JSON.parse(gidh("_cw_LoadData"));
   //https://script.google.com/macros/s/AKfycbyH2V4BDffuvygU_jyhmyJvFIGjj6LlNXLVHWMyubsw7960mI06/exec?fn=getRequest&request=abcd
+  //console.log(Data);
   var rObj = await gsrfn("fn=sfd_bmd_Table&Data="+JSON.stringify(Data)+"&MaxX="+gidh("_cw_MaxX")+"");
   //console.log(rObj);
+  if(rObj.text2==""){return "";}
   
 	sidh("_cw_LoadData",JSON.stringify(rObj.Data));
+	sidh("_cw_Landmarks",JSON.stringify(rObj.Landmarks));
 	show_LoadTable();
 	sidh("sfd_bmd_solution",rObj.text2);
 	GraphData=[rObj.DataSFBM[0],rObj.DataSFBM[rObj.DataSFBM.length-1]];
@@ -403,6 +449,9 @@ function SampleProblems(ProbNo){
 		case 6:
 			sidh("_cw_LoadData",'[["Type","Start/Point Position (m)","End Position (m)","Start/Point Magnitude (kN/m)","End Magnitude (kN/m)","Direction"],["","","","","",""],["Beam",0,"10","","",""],["Hinged Support","0","",-80,"",""],["Roller Support","10","",-50,"",""],["Distributed Load","2","6","10","10",""],["Point Load","2","","50","","90"],["Point Load","6","","40","","90"]]');refreshSFDBMD();
 			break;
+		case 7:
+			sidh("_cw_LoadData",'[["Type","Start/Point Position (m)","End Position (m)","Start/Point Magnitude (kN/m)","End Magnitude (kN/m)","Direction"],["","","","","",""],["Beam",0,"10","","",""],["Distributed Load","0","5","0","20",""],["Distributed Load","5","10","20","0",""],["Hinged Support","0","","","",""],["Roller Support","10","","","",""]]');refreshSFDBMD();
+			break;
 		default: alert(ProbNo);break;
 	}
 }
@@ -418,8 +467,10 @@ function show_LoadTable(appendRow){
 
 function refreshSFDBMD(){
   sidh("sfd_bmd_solution","");
-  sidh("_cw_showSFD2","Please Wait ...");
-  sidh("_cw_showBMD2","Please Wait ...");
+  sidh("_cw_showSFD2","...");
+  sidh("_cw_showBMD2","...");
+  //console.log("loaddata = "+gidh("_cw_LoadData"));
+  if(gidh("_cw_LoadData")==null || gidh("_cw_LoadData")==""){return "";}
   show_LoadTable();
   show_FBD();
   sfd_bmd_Table();
@@ -481,7 +532,7 @@ Sample Problems<br>
 <!---  Hidden Forms  --->
 <div id="_cw_addBeamHidden" hidden align=center>
 <br><br><br><br><br><br><table border=1 style="border-collapse:collapse;" ><tr><td>
-Beam Length </td><td><input type="text" id="_cw_beamLength" value="" > m</td></tr><tr><td>
+Beam Length </td><td><input type="number" min=1 max=50 id="_cw_beamLength" value=10 >m</td></tr><tr><td>
 <button id="_cw_addBeam_cancel"  >Cancel</button></td><td>
 <button id="_cw_addBeam_Add" >Add</button> 
 </td></tr></table>
@@ -546,9 +597,9 @@ End Magnitude </td><td><input type="text" id="_cw_EndMagnitude" value="" > kN-m
 
 
 
-
-<div id="_cw_LoadData" >[["Type","Start/Point Position (m)","End Position (m)","Start/Point Magnitude (kN/m)","End Magnitude (kN/m)","Direction"],["","","","","",""],["Beam",0,"9","","",""],["Hinged Support","0","",-22.22222222222222,"",""],["Roller Support","9","",-17.77777777777778,"",""],["Distributed Load","2","6","10","10",""]]</div>
-<div id="_cw_MaxX" hidden ></div><div id="_cw_MaxY" hidden ></div><div id="_cw_MinY" hidden ></div><div id="tempvals"  ></div><div id=sfd_bmd_solution></div><div id="contraflexure" ></div>
+<div id="_cw_LoadData" ></div>
+<!---<div id="_cw_LoadData" >[["Type","Start/Point Position (m)","End Position (m)","Start/Point Magnitude (kN/m)","End Magnitude (kN/m)","Direction"],["","","","","",""],["Beam",0,"9","","",""],["Hinged Support","0","",-22.22222222222222,"",""],["Roller Support","9","",-17.77777777777778,"",""],["Distributed Load","2","6","10","10",""]]</div> --->
+<div id="_cw_MaxX" hidden ></div><div id="_cw_MaxY" hidden ></div><div id="_cw_MinY" hidden ></div><div id="_cw_Landmarks" hidden></div><div id="tempvals"  ></div><div id=sfd_bmd_solution></div><div id="contraflexure" ></div>
 <div id="target_id"></div>
 <script>
   refreshSFDBMD();
