@@ -189,7 +189,8 @@ function sortByColumn0_(a, colIndex){
 
 
 function draw_text(ctx,p,txt,fnt){
-  if(fnt==null || fnt==""){ctx.font = "14px Arial";}else{ctx.font=fnt;}
+  if(fnt==null || fnt==""){ctx.font = "12px Arial";}else{ctx.font=fnt;}
+  ctx.fillStyle = "black";
   ctx.fillText(txt, p.x, p.y);
 }
 function show_dimensions(ctx,p0,Data){
@@ -309,8 +310,9 @@ function showGraphOnCanvas(GraphData,GraphId,CId){
   let scaleX=500/MaxX,scaleY=200/(MaxY-MinY),x=50,y=50+MaxY*scaleY;  //300-MinY200/(MaxY-MinY);
   let Yd=370;
   //console.log("scaleX = "+scaleX+"  scaleY="+scaleY+"   x = "+x+"  y="+y);
-  sidh(GraphId,'<canvas id="'+CId+'" width="600" height="400" style="border:1px solid #d3d3d3;background:white;">Your browser does not support the HTML5 canvas tag.</canvas>');
+  sidh(GraphId,'<canvas id="'+CId+'" width="600" height="400" style="border:1px solid #d3d3d3;">Your browser does not support the HTML5 canvas tag.</canvas>');
   let c = document.getElementById(CId);let ctxSFBM = c.getContext("2d");
+  ctxSFBM.fillStyle = "white";ctxSFBM.fillRect(0, 0, 600, 400);
   //ctxSFBM.globalAlpha = 0.2;
   let Y=y;
   let X=Number(MaxX); let X1=x+X*scaleX; 
