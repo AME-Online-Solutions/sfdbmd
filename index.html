@@ -323,7 +323,6 @@ function showGraphOnCanvas(GraphData,GraphId,CId,Landmarks){
    //X=Number(MaxX);X1=x+X*scaleX;ctxSFBM.beginPath(); ctxSFBM.moveTo(X1, Y+2); ctxSFBM.lineTo(X1, Y+18); ctxSFBM.stroke(); draw_text(ctxSFBM,{x:X1-10,y:Y+30},X);
    //plot
   ctxSFBM.beginPath(); ctxSFBM.moveTo(Number(x)+GraphData[0][0]*scaleX, Number(y)+GraphData[0][1]*scaleY);
-  console.log(Landmarks)
   for(let i=0;i<GraphData.length;i++){
    	sidh("contraflexure","");
    	ctxSFBM.lineTo(Number(x)+GraphData[i][0]*scaleX, Number(y)-GraphData[i][1]*scaleY);
@@ -335,44 +334,11 @@ function showGraphOnCanvas(GraphData,GraphId,CId,Landmarks){
    		  if(i<GraphData.length-1 && GraphData[i][0]-GraphData[i+1][0]==0 && Math.abs(GraphData[i][1]-GraphData[i+1][1])<1){showval=false;}
    		}
    		if(showval==true){
-   			console.log("SFBMVal = "+GraphData[i][1]+"   at "+GraphData[i][0]+"   "+CId);
    			draw_text(ctxSFBM,{x:Number(x)+GraphData[i][0]*scaleX+3,y:Number(y)-GraphData[i][1]*scaleY-5},GraphData[i][1].toFixed(3));
    			ctxSFBM.arc(Number(x)+GraphData[i][0]*scaleX, Number(y)-GraphData[i][1]*scaleY, 2, 0, 2 * Math.PI);
    			ctxSFBM.moveTo(Number(x)+GraphData[i][0]*scaleX, Number(y)-GraphData[i][1]*scaleY);
    		}
    	}
-   	//if(GraphData[i][1]>0 && (Landmarks.indexOf(GraphData[i][0])>-1 || Landmarks.indexOf(Number(GraphData[i][0])))>-1){console.log("SFBMVal = "+GraphData[i][1]+"   at "+GraphData[i][0]);}
-   	//if(i==0 || i==GraphData.length-1){draw_text(ctxSFBM,{x:Number(x)+GraphData[i][0]*scaleX+3,y:Number(y)-GraphData[i][1]*scaleY+15},GraphData[i][0]);}
-   	/*if(i>0 && GraphData[i][1]*GraphData[i-1][1]<0){
-   		//intersepting x axis
-   		let interceptX=(GraphData[i][0]-GraphData[i-1][0])*GraphData[i-1][1]/(GraphData[i][1]-GraphData[i-1][1]);
-   		interceptX=Number(interceptX)+Number(GraphData[i-1][0]);
-   		console.log("interceptX = "+interceptX+"   GraphId = "+GraphId);
-   		if(GraphId.indexOf("SFD")>-1){
-   		  ctxSFBM.moveTo(Number(x)+Number(interceptX)*scaleX, Yd-3); ctxSFBM.lineTo(Number(x)+Number(interceptX)*scaleX, Yd+3);
-   		  draw_text(ctxSFBM,{x:Number(x)+Number(interceptX)*scaleX,y:Yd-10},interceptX.toFixed(3));
-   		  ctxSFBM.moveTo(Number(x)+Number(interceptX)*scaleX, Number(y)-GraphData[i][1]*scaleY);
-   		}else{
-   			draw_text(ctxSFBM,{x:Number(x)+Number(interceptX)*scaleX+3,y:Number(y)+15},interceptX.toFixed(3));
-   		}
-   	}
-    if(i>0 && GraphData[i][1]==0){
-    	if(GraphId.indexOf("SFD")>-1){
-    		ctxSFBM.moveTo(Number(x)+Number(GraphData[i][0])*scaleX, Yd-3); ctxSFBM.lineTo(Number(x)+Number(GraphData[i][0])*scaleX, Yd+3);
-    		draw_text(ctxSFBM,{x:Number(x)+Number(GraphData[i][0])*scaleX,y:Yd-15},GraphData[i][0].toFixed(3));
-    		ctxSFBM.moveTo(Number(x)+Number(GraphData[i][0])*scaleX, Number(y)-GraphData[i][1]*scaleY);
-    	}else{
-	    	draw_text(ctxSFBM,{x:Number(x)+Number(GraphData[i][0])*scaleX+3,y:Number(y)-GraphData[i][1]*scaleY+15},GraphData[i][0]);
-	    }
-	  }*/
-/*  	if(i>0 && i<GraphData.length-1 && (GraphData[i][1]-GraphData[i-1][1])*(GraphData[Number(i)+1][1]-GraphData[i][1])<0){
-   		//Max/Min Value
-   		draw_text(ctxSFBM,{x:Number(x)+Number(GraphData[i][0])*scaleX-4,y:Number(y)-GraphData[i][1]*scaleY-5},GraphData[i][1]);
-   	}
-  	if(i>0 && i<GraphData.length-1 && Math.abs((GraphData[Number(i)+1][1]-GraphData[i][1])-(GraphData[i][1]-GraphData[i-1][1]))>0.4 ){
-   		//slope change
-   		draw_text(ctxSFBM,{x:Number(x)+Number(GraphData[i][0])*scaleX-4,y:Number(y)-GraphData[i][1]*scaleY-5},GraphData[i][1]);
-   	}*/
   }
   ctxSFBM.stroke();
 }
@@ -428,20 +394,6 @@ async function sfd_bmd_Table(){
 	show_LoadTable();
 	sidh("sfd_bmd_solution",rObj.text2);
 	
-/*	GraphData=[rObj.DataSFBM[0],rObj.DataSFBM[rObj.DataSFBM.length-1]];
-	//console.log(GraphData);
-	GraphData=Transpose_(GraphData);
-	GraphData.splice(1,0,[0,0]);
-	GraphData.push([GraphData[GraphData.length-1][0],0]);
-	//showGraph(GraphData,"_cw_showBMD");
-	showGraphOnCanvas(GraphData,"_cw_showBMD2","showBMD",rObj.Landmarks);
-	
-	//console.log(rObj.DataSF2);
-	GraphData=Transpose_(rObj.DataSF2);
-	GraphData.splice(1,0,[0,0]);
-	GraphData.push([GraphData[GraphData.length-1][0],0]);
-	showGraphOnCanvas(GraphData,"_cw_showSFD2","showSFD2",rObj.Landmarks);
-*/	
 	GraphData=Transpose_([rObj.sbl2[0],rObj.sbl2[1]]);
 	for(let i=GraphData.length-1;i>0;i--){if(GraphData[i][0]-GraphData[i-1][0]==0 && GraphData[i][1]-GraphData[i-1][1]==0){GraphData.splice(i,1);}}
 	//console.log(GraphData);
@@ -504,13 +456,6 @@ function refreshSFDBMD(){
   show_LoadTable();
   show_FBD();
   sfd_bmd_Table();
-  /*let GraphData=[
-			['Price', 'Size'],
-			[50,7],[60,8],[70,8],[80,9],[90,9],
-			[100,9],[110,10],[120,11],
-			[130,14],[140,14],[150,15]
-		];
-  showGraph(GraphData,"_cw_showSFD");*/
 }
 </script>
 </head>
@@ -550,15 +495,6 @@ Sample Problems<br>
 </td><td>
 <div id="_cw_showSFD2" style="width:600px;height:400px;"></div>
 </td></tr>
-<!--
-<tr><td></td><td>
-<div id="_cw_showSFD3" style="width:600px;height:400px;"></div>
-</td></tr>
-
-<tr><td></td><td>
-<div id="_cw_showBMD3" style="width:600px;height:400px;"></div>
-</td></tr>
--->
 <tr><td></td><td>
 <div id="_cw_showBMD2" style="width:600px;height:400px;"></div>
 </td></tr>
