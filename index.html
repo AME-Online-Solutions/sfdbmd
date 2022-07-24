@@ -69,6 +69,9 @@
 	    transform: rotateY(-90deg);	
 	  }
 	}
+.column1 {float: left; min-width:250px; width: 30%; padding: 10px;box-sizing: border-box;}
+.column2 {float: left; min-width:250px; width: 70%; padding: 10px;box-sizing: border-box;}
+.row:after {content: "";display: table;clear: both;}
 
 </style>
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
@@ -501,9 +504,11 @@ function refreshSFDBMD(){
   
 <div id="_cw_MainDiv" align=center>
 <div align=center><h1>Shear Force Diagram and Bending Moment Diagram</h1></div>
-<table border=1>
-<tr><td>
+
+<div class="row">
+  <div class="column1" style="background-color:#ddd;">
 RegKey:<input type=password id="_cw_RegKey" style="width:120px;" ><br>
+<hr>
 <button id="_cw_addBeam" class="button" >Add Beam</button><br>
 <button id="_cw_addSupport" class="button" >Add Support</button><br>
 <button id="_cw_addPointLoad" class="button" >Add Point Load</button><br>
@@ -512,8 +517,9 @@ RegKey:<input type=password id="_cw_RegKey" style="width:120px;" ><br>
 <br><br><br>
 <select name="_cw_RemoveRow" id="_cw_RemoveRow" class="button button3" ><option value=" "> </option></select>
 <br><button id="_cw_RemoveIt" class="button button3" >Remove It</button>
-</td><td><div align=center id="_cw_LoadFigure" style="min-width:200px;"></div>
-</td></tr><td>
+
+<hr>
+
 Sample Problems<br>
 <button name="SampleProblems" value=1 class="button" >ssb-Point Load</button><br>
 <button name="SampleProblems" value=2 class="button" >ssb-Inclined Point Load</button><br>
@@ -525,27 +531,18 @@ Sample Problems<br>
 <button name="SampleProblems" value=8 class="button" >ssb-Combination 4</button><br>
 <button name="SampleProblems" value=9 class="button" >ssb-Combination 5</button><br>
 <button name="SampleProblems" value=10 class="button" >ssb-Combination 6</button><br>
-</td><td>
+
+  </div>
+  <div class="column2" style="background-color:#eee;">
+
+<div align=center id="_cw_LoadFigure" style="min-width:200px;"></div>
 <div id="_cw_showSFD2" align="center"></div>
-</td></tr>
-<!--
-<tr><td></td><td>
-<div id="_cw_showSFD3" style="width:600px;height:400px;"></div>
-</td></tr>
-
-<tr><td></td><td>
-<div id="_cw_showBMD3" style="width:600px;height:400px;"></div>
-</td></tr>
--->
-<tr><td></td><td>
 <div id="_cw_showBMD2" align="center"></div>
-</td></tr>
+  </div>
+</div>
 
 
-<tr><td colspan=2>
 <div id="_cw_showLoadTable"></div>
-</td></tr>
-</table>
 
 <!---  Hidden Forms  --->
 <div id="_cw_addBeamHidden" hidden align=center>
