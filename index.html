@@ -194,17 +194,17 @@ function draw_text(ctx,p,txt,fnt){
   ctx.fillStyle = "black";
   ctx.fillText(txt, p.x, p.y);
 }
-function show_dimensions(ctx,p0,Data){
-  let Y=350;
+function show_dimensions(ctx,p0,Data,Yd){
+  let Y=Yd;
   let ctxlw=ctx.lineWidth;
   ctx.lineWidth=0.5;
   for(let i=2;i<Data.length;i++){
     if(Data[i][0].toString().trim()=="Beam"){
       let X=Number(Data[i][2]); let X1=p0.x+X*p0.scaleX; ctx.beginPath(); ctx.moveTo(p0.x, Y+2); ctx.lineTo(p0.x, Y+18); ctx.stroke(); ctx.beginPath(); ctx.moveTo(p0.x, Y+10); ctx.lineTo(X1+20, Y+10); ctx.stroke(); ctx.beginPath(); ctx.moveTo(X1+15, Y+5); ctx.lineTo(X1+20, Y+10); ctx.lineTo(X1+15, Y+15); ctx.stroke(); draw_text(ctx,{x:X1+30,y:Y+15},"x");
     }
-    let X=Number(Data[i][1]);let X1=p0.x+X*p0.scaleX;ctx.beginPath(); ctx.moveTo(X1, Y+2); ctx.lineTo(X1, Y+18); ctx.stroke(); draw_text(ctx,{x:X1-10,y:Y+30},X);
+    let X=Number(Data[i][1]);let X1=p0.x+X*p0.scaleX;ctx.beginPath(); ctx.moveTo(X1, Y+2); ctx.lineTo(X1, Y+18); ctx.stroke(); draw_text(ctx,{x:X1-10,y:Y+25},X);
     if(Data[i][2]!=""){
-      let X=Number(Data[i][2]);let X1=p0.x+X*p0.scaleX;ctx.beginPath(); ctx.moveTo(X1, Y+2);ctx.lineTo(X1, Y+18);ctx.stroke(); draw_text(ctx,{x:X1-10,y:Y+30},X);
+      let X=Number(Data[i][2]);let X1=p0.x+X*p0.scaleX;ctx.beginPath(); ctx.moveTo(X1, Y+2);ctx.lineTo(X1, Y+18);ctx.stroke(); draw_text(ctx,{x:X1-10,y:Y+25},X);
     }
   }
   ctx.lineWidth=ctxlw;
@@ -275,8 +275,8 @@ function draw_Beam(ctx,p0,rowContents){
   //console.log(JSON.stringify(rowContents));
   ctx.beginPath();ctx.lineWidth = 5;ctx.lineCap = "butt";ctx.moveTo(p0.x, p0.y);ctx.lineTo(p0.x+Number(rowContents[2])*p0.scaleX, p0.y);ctx.stroke();ctx.lineWidth=3;
 }
-function showLandmarks(ctxSFBM,x,y,scaleX,scaleY,X1){
-  Yd=370;
+function showLandmarks(ctxSFBM,x,y,scaleX,scaleY,X1,Yd){
+  //Yd=370;
   ctxSFBM.beginPath(); ctxSFBM.moveTo(x, Yd); ctxSFBM.lineTo(X1+20, Yd); ctxSFBM.stroke(); 
   ctxSFBM.beginPath(); ctxSFBM.moveTo(X1+15, Yd-5); ctxSFBM.lineTo(X1+20, Yd); ctxSFBM.lineTo(X1+15, Yd+5); ctxSFBM.stroke(); 
   let Landmarks=JSON.parse(gidh("_cw_Landmarks"));
@@ -288,6 +288,14 @@ function showLandmarks(ctxSFBM,x,y,scaleX,scaleY,X1){
   	}
   }
   
+}
+function getScale(MinX,MaxX,MinY,MaxY,c){
+  let S={};
+  let cW=c.scrollWidth,cH=c.scrollHeight;
+  let scaleX=(cW-cW/5)/MaxX,scaleY=(cH/2)/(MaxY-MinY),x0=cW/10,y0=(cH/10)+MaxY*scaleY;  //300-MinY200/(MaxY-MinY);
+  let Yd=cH-30;
+  S={scaleX:scaleX,scaleY:scaleY,x0:x0,y0:y0,cW:cW,cH:cH,Yd:Yd}
+  return S;
 }
 function showGraphOnCanvas(GraphData,GraphId,CId,Landmarks){
   //console.log(GraphData);
@@ -302,20 +310,23 @@ function showGraphOnCanvas(GraphData,GraphId,CId,Landmarks){
   	if(MaxY<GraphData[i][1]){MaxY=GraphData[i][1];}
   }
   //console.log("MinX = "+MinX+"  MaxX="+MaxX+"   MinY = "+MinY+"  MaxY="+MaxY);
-  let scaleX=500/MaxX,scaleY=200/(MaxY-MinY),x=50,y=50+MaxY*scaleY;  //300-MinY200/(MaxY-MinY);
-  let Yd=370;
+  
   //console.log("scaleX = "+scaleX+"  scaleY="+scaleY+"   x = "+x+"  y="+y);
-  sidh(GraphId,'<canvas id="'+CId+'" width="600" height="400" style="border:1px solid #d3d3d3;">Your browser does not support the HTML5 canvas tag.</canvas>');
+  sidh(GraphId,'<canvas id="'+CId+'" width="400" height="250" style="border:1px solid #d3d3d3;">Your browser does not support the HTML5 canvas tag.</canvas>');
   let c = document.getElementById(CId);let ctxSFBM = c.getContext("2d");
-  ctxSFBM.fillStyle = "white";ctxSFBM.fillRect(0, 0, 600, 400);
+  //let cW=c.scrollWidth,cH=c.scrollHeight;
+  let S=getScale(MinX,MaxX,MinY,MaxY,c);
+  let scaleX=S.scaleX,scaleY=S.scaleY,x=S.x0,y=S.y0,cW=S.cW,cH=S.cH,Yd=S.Yd;
   //ctxSFBM.globalAlpha = 0.2;
+  //alert("y="+y);
+  ctxSFBM.fillStyle = "white";ctxSFBM.fillRect(0, 0, cW, cH);
   let Y=y;
   let X=Number(MaxX); let X1=x+X*scaleX; 
   //ctxSFBM.beginPath(); ctxSFBM.moveTo(x, Y+2); ctxSFBM.lineTo(x, Y+18); ctxSFBM.stroke();   
   ctxSFBM.beginPath(); ctxSFBM.moveTo(x, Y); ctxSFBM.lineTo(X1+20, Y); ctxSFBM.stroke(); 
   ctxSFBM.beginPath(); ctxSFBM.moveTo(X1+15, Y-5); ctxSFBM.lineTo(X1+20, Y); ctxSFBM.lineTo(X1+15, Y+5); ctxSFBM.stroke(); 
   
-  showLandmarks(ctxSFBM,x,y,scaleX,scaleY,X1)
+  showLandmarks(ctxSFBM,x,y,scaleX,scaleY,X1,Yd)
    //X=Number(MaxX);X1=x+X*scaleX;ctxSFBM.beginPath(); ctxSFBM.moveTo(X1, Y+2); ctxSFBM.lineTo(X1, Y+18); ctxSFBM.stroke(); draw_text(ctxSFBM,{x:X1-10,y:Y+30},X);
    //plot
   ctxSFBM.beginPath(); ctxSFBM.moveTo(Number(x)+GraphData[0][0]*scaleX, Number(y)+GraphData[0][1]*scaleY);
@@ -344,13 +355,13 @@ function showGraphOnCanvas(GraphData,GraphId,CId,Landmarks){
 
 function show_FBD(){
   //console.log("sfbd");
-  sidh("_cw_LoadFigure",'<canvas id="myCanvas" width="600" height="400" style="border:1px solid #d3d3d3;background:white;">Your browser does not support the HTML5 canvas tag.</canvas>');
+  sidh("_cw_LoadFigure",'<canvas id="myCanvas" width="400" height="250" style="border:1px solid #d3d3d3;background:white;">Your browser does not support the HTML5 canvas tag.</canvas>');
   var c = document.getElementById("myCanvas");var ctx = c.getContext("2d");
   let Data=JSON.parse(gidh("_cw_LoadData"));
   let DataCol1=Data.map(function(value,index) {return value[0];});
   let index=DataCol1.indexOf("Beam");
   
-  let MaxX=0,MaxY=0,MinY=100000;
+  let MaxX=0,MaxY=0,MinY=100000,MinX=0;
   for(let i=2;i<Data.length;i++){
   	if(Data[i][0].indexOf("Support")==-1){
   		if(Number(Data[i][1])>MaxX){MaxX=Number(Data[i][1]);}
@@ -365,10 +376,13 @@ function show_FBD(){
   sidh("_cw_MaxX",MaxX);sidh("_cw_MaxY",MaxY);sidh("_cw_MinY",MinY);
   if(Number(MinY)>0){MinY=0;}
   if(MaxY==MinY){MaxY=100;}
-  let p0={scaleX:500/MaxX,scaleY:200/(MaxY-MinY),x:50,y:300-MinY*200/(MaxY-MinY)};
+  let S=getScale(MinX,MaxX,MinY,MaxY,c);
+  let scaleX=S.scaleX,scaleY=S.scaleY,x=S.x0,y=S.y0,cW=S.cW,cH=S.cH,Yd=S.Yd;
+  let p0={scaleX:scaleX,scaleY:scaleY,x:x,y:y};
+  //let p0={scaleX:500/MaxX,scaleY:200/(MaxY-MinY),x:50,y:300-MinY*200/(MaxY-MinY)};
   sidh("tempvals", p0.scaleX+" "+p0.scaleY+" "+p0.x+" "+p0.y)
   //console.log("p0.scaleX = "+p0.scaleX+" p0.scaleY="+p0.scaleY+"    p0.x="+p0.x+"   p0.y="+p0.y)
-  show_dimensions(ctx,p0,Data);
+  show_dimensions(ctx,p0,Data,Yd);
   for(let i=2;i<Data.length;i++){
   	if(Data[i][0]=="Beam"){draw_Beam(ctx,p0,Data[i]);};
   	if(Data[i][0].indexOf("Support")>-1){draw_support(ctx,{type:Data[i][0].split(" ")[0],x:p0.x+p0.scaleX*Data[i][1],y:p0.y,location:Data[i][1]})};
@@ -393,7 +407,8 @@ async function sfd_bmd_Table(){
   	if(proceed==false){alert("Add appropriate Support Element");return }
   }*/
   if(Data.col(0).partialSearchFor("Load")==-1){alert("Add Support Element");return }
-  var rObj = await gsrfn("fn=sfd_bmd_Table&Data="+JSON.stringify(Data)+"&MaxX="+gidh("_cw_MaxX")+"");
+  var rObj = await gsrfn("fn=sfd_bmd_Table&Data="+JSON.stringify(Data)+"&MaxX="+gidh("_cw_MaxX")+"&RegKey="+gidv("_cw_RegKey")+"");
+  if(rObj==-1){alert("Cannot proceed. Wrong RegKey.");return ""}
   //console.log(rObj);
   if(rObj.text2==""){return "";}
   
@@ -488,6 +503,7 @@ function refreshSFDBMD(){
 <div align=center><h1>Shear Force Diagram and Bending Moment Diagram</h1></div>
 <table border=1>
 <tr><td>
+RegKey:<input type=password id="_cw_RegKey" style="width:120px;" ><br>
 <button id="_cw_addBeam" class="button" >Add Beam</button><br>
 <button id="_cw_addSupport" class="button" >Add Support</button><br>
 <button id="_cw_addPointLoad" class="button" >Add Point Load</button><br>
@@ -496,7 +512,7 @@ function refreshSFDBMD(){
 <br><br><br>
 <select name="_cw_RemoveRow" id="_cw_RemoveRow" class="button button3" ><option value=" "> </option></select>
 <br><button id="_cw_RemoveIt" class="button button3" >Remove It</button>
-</td><td><div align=center id="_cw_LoadFigure" style="width:600px;height:400px;" ></div>
+</td><td><div align=center id="_cw_LoadFigure" style="min-width:200px;"></div>
 </td></tr><td>
 Sample Problems<br>
 <button name="SampleProblems" value=1 class="button" >ssb-Point Load</button><br>
@@ -510,7 +526,7 @@ Sample Problems<br>
 <button name="SampleProblems" value=9 class="button" >ssb-Combination 5</button><br>
 <button name="SampleProblems" value=10 class="button" >ssb-Combination 6</button><br>
 </td><td>
-<div id="_cw_showSFD2" style="width:600px;height:400px;"></div>
+<div id="_cw_showSFD2" align="center"></div>
 </td></tr>
 <!--
 <tr><td></td><td>
@@ -522,7 +538,7 @@ Sample Problems<br>
 </td></tr>
 -->
 <tr><td></td><td>
-<div id="_cw_showBMD2" style="width:600px;height:400px;"></div>
+<div id="_cw_showBMD2" align="center"></div>
 </td></tr>
 
 
