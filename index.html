@@ -297,7 +297,7 @@ function showLandmarks(ctxSFBM,x,y,scaleX,scaleY,X1,Yd){
 function getScale(MinX,MaxX,MinY,MaxY,c){
   let S={};
   let cW=c.scrollWidth,cH=c.scrollHeight;
-  let scaleX=(cW-cW/5)/MaxX,scaleY=(cH/2)/(MaxY-MinY),x0=cW/10,y0=(cH/10)+MaxY*scaleY;  //300-MinY200/(MaxY-MinY);
+  let scaleX=(cW-cW/5)/MaxX,scaleY=(cH/2)/(MaxY-MinY),x0=cW/12,y0=(cH/10)+MaxY*scaleY+20;  //300-MinY200/(MaxY-MinY);
   let Yd=cH-30;
   S={scaleX:scaleX,scaleY:scaleY,x0:x0,y0:y0,cW:cW,cH:cH,Yd:Yd}
   return S;
@@ -325,6 +325,11 @@ function showGraphOnCanvas(GraphData,GraphId,CId,Landmarks){
   //ctxSFBM.globalAlpha = 0.2;
   //alert("y="+y);
   ctxSFBM.fillStyle = "white";ctxSFBM.fillRect(0, 0, cW, cH);
+  let ttxt="";
+  if(CId.indexOf("SFD")>-1){ttxt="Shear Force Diagram (SFD)";}
+  if(CId.indexOf("BMD")>-1){ttxt="Bending Moment Diagram (BMD)";}
+  ctxSFBM.fillStyle = "black";
+  ctxSFBM.fillText(ttxt, 2, 10);
   let Y=y;
   let X=Number(MaxX); let X1=x+X*scaleX; 
   //ctxSFBM.beginPath(); ctxSFBM.moveTo(x, Y+2); ctxSFBM.lineTo(x, Y+18); ctxSFBM.stroke();   
@@ -383,6 +388,7 @@ function show_FBD(){
   if(MaxY==MinY){MaxY=100;}
   let S=getScale(MinX,MaxX,MinY,MaxY,c);
   let scaleX=S.scaleX,scaleY=S.scaleY,x=S.x0,y=S.y0,cW=S.cW,cH=S.cH,Yd=S.Yd;
+  ctx.fillText("Free Body Diagram (FBD)", 2, 10);
   let p0={scaleX:scaleX,scaleY:scaleY,x:x,y:y};
   //let p0={scaleX:500/MaxX,scaleY:200/(MaxY-MinY),x:50,y:300-MinY*200/(MaxY-MinY)};
   sidh("tempvals", p0.scaleX+" "+p0.scaleY+" "+p0.x+" "+p0.y)
