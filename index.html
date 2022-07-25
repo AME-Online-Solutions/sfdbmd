@@ -317,7 +317,7 @@ function showGraphOnCanvas(GraphData,GraphId,CId,Landmarks){
   //console.log("MinX = "+MinX+"  MaxX="+MaxX+"   MinY = "+MinY+"  MaxY="+MaxY);
   
   //console.log("scaleX = "+scaleX+"  scaleY="+scaleY+"   x = "+x+"  y="+y);
-  sidh(GraphId,'<a id="downloadLink" download="Prob_'+CId+'_.jpg">Download as image</a><br><canvas id="'+CId+'" width="400" height="250" style="border:1px solid #d3d3d3;">Your browser does not support the HTML5 canvas tag.</canvas>');
+  sidh(GraphId,'<canvas id="'+CId+'" width="400" height="250" style="border:1px solid #d3d3d3;">Your browser does not support the HTML5 canvas tag.</canvas>');
   let c = document.getElementById(CId);let ctxSFBM = c.getContext("2d");
   //let cW=c.scrollWidth,cH=c.scrollHeight;
   let S=getScale(MinX,MaxX,MinY,MaxY,c);
@@ -543,8 +543,11 @@ Sample Problems<br>
   </div>
   <div class="column2" style="background-color:#eee;">
 
+<a id="downloadLnk" download="Prob__FBD.jpg">Download as image</a><br>
 <div align=center id="_cw_LoadFigure" style="min-width:200px;"></div>
+<a id="downloadLnk" download="Prob__SFD.jpg">Download as image</a><br>
 <div id="_cw_showSFD2" align="center"></div>
+<a id="downloadLnk" download="Prob__BMD.jpg">Download as image</a><br>
 <div id="_cw_showBMD2" align="center"></div>
   </div>
 </div>
