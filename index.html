@@ -317,7 +317,7 @@ function showGraphOnCanvas(GraphData,GraphId,CId,Landmarks){
   //console.log("MinX = "+MinX+"  MaxX="+MaxX+"   MinY = "+MinY+"  MaxY="+MaxY);
   
   //console.log("scaleX = "+scaleX+"  scaleY="+scaleY+"   x = "+x+"  y="+y);
-  sidh(GraphId,'<a id="downloadLnk" download="Prob_'+CId+'_.jpg">Download as image</a><br><canvas id="'+CId+'" width="400" height="250" style="border:1px solid #d3d3d3;">Your browser does not support the HTML5 canvas tag.</canvas>');
+  sidh(GraphId,'<a id="downloadLink" download="Prob_'+CId+'_.jpg">Download as image</a><br><canvas id="'+CId+'" width="400" height="250" style="border:1px solid #d3d3d3;">Your browser does not support the HTML5 canvas tag.</canvas>');
   let c = document.getElementById(CId);let ctxSFBM = c.getContext("2d");
   //let cW=c.scrollWidth,cH=c.scrollHeight;
   let S=getScale(MinX,MaxX,MinY,MaxY,c);
@@ -365,7 +365,7 @@ function showGraphOnCanvas(GraphData,GraphId,CId,Landmarks){
 
 function show_FBD(){
   //console.log("sfbd");
-  sidh("_cw_LoadFigure",'<a id="downloadLnk" download="Prob_FBD_.jpg">Download FBD</a><br><canvas id="myCanvas" width="400" height="250" style="border:1px solid #d3d3d3;background:white;">Your browser does not support the HTML5 canvas tag.</canvas>');
+  sidh("_cw_LoadFigure",'<a id="downloadLink" download="Prob_FBD_.jpg">Download FBD</a><br><canvas id="myCanvas" width="400" height="250" style="border:1px solid #d3d3d3;background:white;">Your browser does not support the HTML5 canvas tag.</canvas>');
   var c = document.getElementById("myCanvas");var ctx = c.getContext("2d");
   let Data=JSON.parse(gidh("_cw_LoadData"));
   let DataCol1=Data.map(function(value,index) {return value[0];});
