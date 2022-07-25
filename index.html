@@ -322,7 +322,8 @@ function showGraphOnCanvas(GraphData,GraphId,CId,Landmarks){
   //console.log("MinX = "+MinX+"  MaxX="+MaxX+"   MinY = "+MinY+"  MaxY="+MaxY);
   
   //console.log("scaleX = "+scaleX+"  scaleY="+scaleY+"   x = "+x+"  y="+y);
-  sidh(GraphId,'<canvas id="'+CId+'" width="400" height="250" style="border:1px solid #aaa;">Your browser does not support the HTML5 canvas tag.</canvas>');
+  let fbdimg=document.getElementById("myCanvas");
+  sidh(GraphId,'<canvas id="'+CId+'" width="'+fbdimg.width+'" height="'+fbdimg.height+'" style="border:1px solid #aaa;">Your browser does not support the HTML5 canvas tag.</canvas>');
   let c = document.getElementById(CId);let ctxSFBM = c.getContext("2d");
   //let cW=c.scrollWidth,cH=c.scrollHeight;
   let S=getScale(MinX,MaxX,MinY,MaxY,c);
@@ -370,7 +371,7 @@ function showGraphOnCanvas(GraphData,GraphId,CId,Landmarks){
 
 function show_FBD(){
   //console.log("sfbd");
-  sidh("_cw_LoadFigure",'<canvas id="myCanvas" width="400" height="250" style="border:1px solid #aaa;background:white;">Your browser does not support the HTML5 canvas tag.</canvas>');
+  sidh("_cw_LoadFigure",'<canvas id="myCanvas" width="600" height="250" style="border:1px solid #aaa;background:white;">Your browser does not support the HTML5 canvas tag.</canvas>');
   var c = document.getElementById("myCanvas");var ctx = c.getContext("2d");
   let Data=JSON.parse(gidh("_cw_LoadData"));
   let DataCol1=Data.map(function(value,index) {return value[0];});
@@ -490,7 +491,8 @@ function show_LoadTable(appendRow){
   for(let i=2;i<Data.length;i++){selectElement.add(new Option(Data[i].join("_"), Data[i].join("_")));}
 }
 function addAllFigures(){
-  sidh("AllFigures",'<canvas id="myCanvas2" width="400" height="780" style="background:white;">Your browser does not support the HTML5 canvas tag.</canvas>');
+  var img1 = document.getElementById("myCanvas");
+  sidh("AllFigures",'<br><canvas id="myCanvas2" width="'+img1.width+'" height="'+(img1.height*3+20)+'" style="background:white;">Your browser does not support the HTML5 canvas tag.</canvas>');
   var c = document.getElementById("myCanvas2");var ctx = c.getContext("2d");
   let cW=c.scrollWidth,cH=c.scrollHeight;
   ctx.fillStyle = "white";ctx.fillRect(0, 0, cW, cH);
