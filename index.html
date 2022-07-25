@@ -393,7 +393,7 @@ function show_FBD(){
   if(MaxY==MinY){MaxY=100;}
   let S=getScale(MinX,MaxX,MinY,MaxY,c);
   let scaleX=S.scaleX,scaleY=S.scaleY,x=S.x0,y=S.y0,cW=S.cW,cH=S.cH,Yd=S.Yd;
-  ctxSFBM.fillStyle = "white";ctxSFBM.fillRect(0, 0, cW, cH);
+  ctx.fillStyle = "white";ctx.fillRect(0, 0, cW, cH);
   ctx.fillText("Free Body Diagram (FBD)", 2, 10);
   let p0={scaleX:scaleX,scaleY:scaleY,x:x,y:y};
   //let p0={scaleX:500/MaxX,scaleY:200/(MaxY-MinY),x:50,y:300-MinY*200/(MaxY-MinY)};
