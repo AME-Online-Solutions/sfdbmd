@@ -79,6 +79,11 @@
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script>
+  //function download() {
+ //   var dt = canvas.toDataURL('image/jpeg');
+ //   this.href = dt;
+ // };
+  //downloadLnk.addEventListener('click', download, false);
 $(document).ready(function(){
   $("#_cw_MainDiv button").click(function(){
     if(this.name=="SampleProblems"){SampleProblems(this.value);}    
@@ -543,11 +548,11 @@ Sample Problems<br>
   </div>
   <div class="column2" style="background-color:#eee;">
 
-<a id="downloadLnk" download="Prob__FBD.jpg">Download as image</a><br>
+<!--<a id="downloadLnk" download="Prob__FBD.jpg">Download as image</a><br>-->
 <div align=center id="_cw_LoadFigure" style="min-width:200px;"></div>
-<a id="downloadLnk" download="Prob__SFD.jpg">Download as image</a><br>
+<!--<a id="downloadLnk" download="Prob__SFD.jpg">Download as image</a><br>-->
 <div id="_cw_showSFD2" align="center"></div>
-<a id="downloadLnk" download="Prob__BMD.jpg">Download as image</a><br>
+<!--<a id="downloadLnk" download="Prob__BMD.jpg">Download as image</a><br>-->
 <div id="_cw_showBMD2" align="center"></div>
   </div>
 </div>
@@ -628,11 +633,6 @@ End Magnitude </td><td><input type="text" id="_cw_EndMagnitude" value="" > kN/m
 <div id="_cw_MaxX" hidden ></div><div id="_cw_MaxY" hidden ></div><div id="_cw_MinY" hidden ></div><div id="_cw_Landmarks" hidden></div><div id="tempvals"  ></div><div id=sfd_bmd_solution></div><div id="contraflexure" ></div>
 <div id="target_id"></div>
 <script>
-  function download() {
-    var dt = canvas.toDataURL('image/jpeg');
-    this.href = dt;
-  };
-  downloadLnk.addEventListener('click', download, false);
   refreshSFDBMD();
 </script>
 </div>
