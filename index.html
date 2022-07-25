@@ -492,6 +492,7 @@ function show_LoadTable(appendRow){
 function addAllFigures(){
   sidh("AllFigures",'<canvas id="myCanvas2" width="400" height="780" style="border:1px solid #d3d3d3;background:white;">Your browser does not support the HTML5 canvas tag.</canvas>');
   var c = document.getElementById("myCanvas2");var ctx = c.getContext("2d");
+  let cW=c.scrollWidth,cH=c.scrollHeight;
   ctx.fillStyle = "white";ctx.fillRect(0, 0, cW, cH);
   var img1 = document.getElementById("myCanvas");
   ctx.drawImage(img1, 0, 0);
