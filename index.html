@@ -451,6 +451,8 @@ async function sfd_bmd_Table(){
 	sidh("_cw_Landmarks",JSON.stringify(rObj.Landmarks));
 	show_LoadTable();
 	sidh("sfd_bmd_solution",rObj.text2);
+	sidh("sbltable",rObj.sbltable);
+	
 	
 	GraphData=Transpose_([rObj.sbl2[0],rObj.sbl2[1]]);
 	for(let i=GraphData.length-1;i>0;i--){if(GraphData[i][0]-GraphData[i-1][0]==0 && GraphData[i][1]-GraphData[i-1][1]==0){GraphData.splice(i,1);}}
@@ -526,6 +528,7 @@ function addAllFigures(){
 }
 function refreshSFDBMD(){
   sidh("sfd_bmd_solution","");
+  sidh("AllFigures","");
   sidh("_cw_showSFD2","...");
   sidh("_cw_showBMD2","...");
   //console.log("loaddata = "+gidh("_cw_LoadData"));
@@ -671,13 +674,13 @@ End Magnitude </td><td><input type="text" id="_cw_EndMagnitude" value="" > kN/m
 <!---<div id="_cw_LoadData" >[["Type","Start/Point Position (m)","End Position (m)","Start/Point Magnitude (kN/m)","End Magnitude (kN/m)","Direction"],["","","","","",""],["Beam",0,"9","","",""],["Hinged Support","0","",-22.22222222222222,"",""],["Roller Support","9","",-17.77777777777778,"",""],["Distributed Load","2","6","10","10",""]]</div> --->
 <div id="_cw_MaxX" hidden ></div><div id="_cw_MaxY" hidden ></div><div id="_cw_MinY" hidden ></div><div id="_cw_Landmarks" hidden></div><div id="tempvals"  ></div>
 	 
-<div id="dout" ><div id=sfd_bmd_solution></div><div id="AllFigures"></div></div>
+<div id=sfd_bmd_solution></div>
 <div>
-    <button id="btn-export" onclick="exportHTML('dout');">Export to word doc</button>
+    <button id="btn-export" onclick="exportHTML('sfd_bmd_solution');">Export to word doc</button>
 </div>
 <div id="contraflexure" ></div>
-<div id="target_id"></div>
-
+<div id="sbltable"></div>
+<div id="AllFigures"></div>
 <script>
   refreshSFDBMD();
 </script>
