@@ -451,6 +451,7 @@ async function sfd_bmd_Table(){
 	sidh("_cw_Landmarks",JSON.stringify(rObj.Landmarks));
 	show_LoadTable();
 	sidh("sfd_bmd_solution",rObj.text2);
+	gid("bexport").hidden=false;
 	sidh("sbltable",rObj.sbltable);
 	
 	
@@ -531,6 +532,7 @@ function refreshSFDBMD(){
   sidh("AllFigures","");
   sidh("_cw_showSFD2","...");
   sidh("_cw_showBMD2","...");
+  gid("bexport").hidden=true;
   //console.log("loaddata = "+gidh("_cw_LoadData"));
   if(gidh("_cw_LoadData")==null || gidh("_cw_LoadData")==""){return "";}
   show_LoadTable();
@@ -675,7 +677,7 @@ End Magnitude </td><td><input type="text" id="_cw_EndMagnitude" value="" > kN/m
 <div id="_cw_MaxX" hidden ></div><div id="_cw_MaxY" hidden ></div><div id="_cw_MinY" hidden ></div><div id="_cw_Landmarks" hidden></div><div id="tempvals"  ></div>
 	 
 <div id=sfd_bmd_solution></div>
-<div>
+<div id="bexport" hidden>
     <button id="btn-export" onclick="exportHTML('sfd_bmd_solution');">Export to word doc</button>
 </div>
 <div id="contraflexure" ></div>
