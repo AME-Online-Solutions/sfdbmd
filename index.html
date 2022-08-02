@@ -195,6 +195,7 @@ function SimpleD2T(Data,tableid){
   var table="";
   table+= "<table id='"+tableid+"' border=1 style='border-collapse:collapse;' > ";
   for(var i=0;i<Data.length;i++){
+    for(let j=0;j<Data[0].length;j++){if(!Data[i][j]){Data[i][j]="";}
     if(i==0){
       table+="<thead><tr><th>"+Data[i].join("</th><th>")+"</th></tr></thead><tbody>";
     }else{
