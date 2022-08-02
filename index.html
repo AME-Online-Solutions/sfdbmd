@@ -28,7 +28,7 @@
 	}
 	.button1 {background-color: #4CAF50;} /* Green */
 	.button3 {background-color: #f44336;} /* Red */ 
-
+	.PageA4 {width: 21cm; min-height: 29.7cm; padding: 2cm; margin: 1cm auto; border: 1px #D3D3D3 solid; border-radius: 5px; background: white; box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);text-align:left;}
 	.BackgroundPattern1{
   	color:white;
   	background-image: linear-gradient(45deg, transparent 20%, black 25%, transparent 25%), 
@@ -677,14 +677,14 @@ End Magnitude </td><td><input type="text" id="_cw_EndMagnitude" value="" > kN/m
 <!---<div id="_cw_LoadData" >[["Type","Start/Point Position (m)","End Position (m)","Start/Point Magnitude (kN/m)","End Magnitude (kN/m)","Direction"],["","","","","",""],["Beam",0,"9","","",""],["Hinged Support","0","",-22.22222222222222,"",""],["Roller Support","9","",-17.77777777777778,"",""],["Distributed Load","2","6","10","10",""]]</div> --->
 <div id="_cw_MaxX" hidden ></div><div id="_cw_MaxY" hidden ></div><div id="_cw_MinY" hidden ></div><div id="_cw_Landmarks" hidden></div><div id="tempvals"  ></div>
 	 
-<div id=sfd_bmd_solution style=" width: 21cm; min-height: 29.7cm; padding: 2cm; margin: 1cm auto; border: 1px #D3D3D3 solid; border-radius: 5px; background: white; box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);text-align:left;" ></div>
+<div id=sfd_bmd_solution class=PageA4 ></div>
 <br>
 <div id="bexport" hidden>
     <button id="btn-export" onclick="exportHTML('sfd_bmd_solution');">Export to word doc</button>
 </div>
 <div id="contraflexure" ></div>
 <div id="sbltable"></div>
-<div id="AllFigures"></div>
+<div id="AllFigures" class=PageA4 ></div>
 <script>
   refreshSFDBMD();
 </script>
