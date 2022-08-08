@@ -512,21 +512,24 @@ function show_LoadTable(appendRow){
   for(let i=2;i<Data.length;i++){selectElement.add(new Option(Data[i].join("_"), Data[i].join("_")));}
 }
 function addAllFigures(){
+  // https://sfdbmd.ameonlinesolutions.com/images/sfd%20bmd%20sign%20convension.jpg
+  var img = document.getElementById("signConvension");
   var img1 = document.getElementById("myCanvas");
-  sidh("AllFigures",'<br><canvas id="myCanvas2" width="'+img1.width+'" height="'+(img1.height*3+20)+'" style="background:white;">Your browser does not support the HTML5 canvas tag.</canvas>');
+  sidh("AllFigures",'<br><canvas id="myCanvas2" width="'+img1.width+'" height="'+(img1.height*3+img.height+30)+'" style="background:white;">Your browser does not support the HTML5 canvas tag.</canvas>');
   var c = document.getElementById("myCanvas2");var ctx = c.getContext("2d");
   let cW=c.scrollWidth,cH=c.scrollHeight;
   ctx.fillStyle = "white";ctx.fillRect(0, 0, cW, cH);
   ctx.strokeStyle = "#aaa";
-  var img1 = document.getElementById("myCanvas");
-  ctx.drawImage(img1, 0, 0);
-  ctx.strokeRect(0, 0, img1.width, img1.height);
+  ctx.drawImage(img, 0, 0);
+  ctx.strokeRect(0, 0, img1.width, img.height);
+  ctx.drawImage(img1, 0, img.height+10);
+  ctx.strokeRect(0, img.height+10, img1.width, img1.height);
   var img2 = document.getElementById("showSFD3");
-  ctx.drawImage(img2, 0, 0+img1.height+10);
-  ctx.strokeRect(0, 0+img1.height+10, img2.width, img2.height);
+  ctx.drawImage(img2, 0, img.height+img1.height+20);
+  ctx.strokeRect(0, img.height+img1.height+20, img2.width, img2.height);
   var img3 = document.getElementById("showBMD3");
-  ctx.drawImage(img3, 0, 0+img1.height+img2.height+20);
-  ctx.strokeRect(0, 0+img1.height+img2.height+20, img3.width, img3.height);
+  ctx.drawImage(img3, 0, img.height+img1.height+img2.height+30);
+  ctx.strokeRect(0, img.height+img1.height+img2.height+30, img3.width, img3.height);
 }
 function refreshSFDBMD(){
   sidh("sfd_bmd_solution","");
@@ -685,6 +688,7 @@ End Magnitude </td><td><input type="text" id="_cw_EndMagnitude" value="" > kN/m
 <div id="contraflexure" ></div>
 <div id="sbltable"></div>
 <div id="AllFigures" class=PageA4 ></div>
+<div hidden ><img id="signConvension" src="https://sfdbmd.ameonlinesolutions.com/images/sfd%20bmd%20sign%20convension.jpg"></div>
 <script>
   refreshSFDBMD();
 </script>
