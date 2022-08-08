@@ -189,7 +189,7 @@ function gid(id){return document.getElementById(id);}
 function gidv(id){return document.getElementById(id).value;}
 function sidv(id,val){return document.getElementById(id).value=val;}
 function gidh(id){if(gid(id)==null){console.log(id);};return document.getElementById(id).innerHTML;}
-function sidh(id,val){if(gid(id)==null){console.log(id);};return document.getElementById(id).innerHTML=val;}
+function sidh(id,val){if(gid(id)==null){console.log(id);return;}; document.getElementById(id).innerHTML=val;}
 
 function SimpleD2T(Data,tableid){
   var table="";
