@@ -81,14 +81,14 @@
 	
 	
 <script>
-download_img = function(canvas,el) {
-  var image = canvas.toDataURL("image/jpg");
-  el.href = image;
-};
-  //function download() {
- //   var dt = canvas.toDataURL('image/jpeg');
- //   this.href = dt;
- // };
+function downloadAsImage(canvasid){
+  alert(canvasid)
+  var link = document.createElement('a');
+  link.download = 'filename.png';
+  link.href = document.getElementById(canvasid).toDataURL();
+  link.click();
+}
+
   //downloadLnk.addEventListener('click', download, false);
 $(document).ready(function(){
   $("#_cw_MainDiv button").click(function(){
@@ -519,8 +519,8 @@ function show_LoadTable(appendRow){
 }
 function addAllFigures(){
   // https://sfdbmd.ameonlinesolutions.com/images/sfd%20bmd%20sign%20convension.jpg
-  var img = document.getElementById("signConvension");
-  var img1 = document.getElementById("myCanvas");
+  var img = document.getElementById("signConvension");img.crossOrigin = 'Anonymous';
+  var img1 = document.getElementById("myCanvas");img1.crossOrigin = 'Anonymous';
   sidh("AllFigures",'<br><canvas id="myCanvas2" width="'+img1.width+'" height="'+(img1.height*3+img.height+30)+'" style="background:white;">Your browser does not support the HTML5 canvas tag.</canvas>');
   var c = document.getElementById("myCanvas2");var ctx = c.getContext("2d");
   let cW=c.scrollWidth,cH=c.scrollHeight;
@@ -530,12 +530,13 @@ function addAllFigures(){
   ctx.strokeRect(0, 0, img1.width, img.height);
   ctx.drawImage(img1, 0, img.height+10);
   ctx.strokeRect(0, img.height+10, img1.width, img1.height);
-  var img2 = document.getElementById("showSFD3");
+  var img2 = document.getElementById("showSFD3");img2.crossOrigin = 'Anonymous';
   ctx.drawImage(img2, 0, img.height+img1.height+20);
   ctx.strokeRect(0, img.height+img1.height+20, img2.width, img2.height);
-  var img3 = document.getElementById("showBMD3");
+  var img3 = document.getElementById("showBMD3");img3.crossOrigin = 'Anonymous';
   ctx.drawImage(img3, 0, img.height+img1.height+img2.height+30);
   ctx.strokeRect(0, img.height+img1.height+img2.height+30, img3.width, img3.height);
+  sidh("downloadcanvas",'<button onclick=event.preventDefault();downloadAsImage("myCanvas2"); >Download as jpg</button>');
 }
 function refreshSFDBMD(){
   sidh("sfd_bmd_solution","");
@@ -564,7 +565,7 @@ function refreshSFDBMD(){
 <body>
 <table  id="headertable" class=BackgroundPattern1 style="width:100%;border-collapse: collapse; border: none;padding:0em;margin:0px;">
   <tr>
-  <td style="padding:0px;width:40px;"><span id="cLogo"><img class='rotateimage' src="https://login.ameonlinesolutions.com/images/AMELogo.png" alt='' style=float:left;width:40px;height:40px;border-radius:18px;border:1px solid #fff;display: block;' ></span></td>
+  <td style="padding:0px;width:40px;"><span id="cLogo"><img class='rotateimage' src="https://login.ameonlinesolutions.com/images/AMELogo.png" alt='' style='float:left;width:40px;height:40px;border-radius:18px;border:1px solid #fff;display: block;' ></span></td>
   <td style="padding:0px;" align=left nowrap><span id="cName">&nbsp;<font color=white style='font-family: Impact, serif, Charcoal;font-size:30px;'>AME Online Solutions</font></span></td>
   </tr>
   </table>
@@ -694,8 +695,9 @@ End Magnitude </td><td><input type="text" id="_cw_EndMagnitude" value="" > kN/m
 <div id="contraflexure" hidden ></div>
 <div id="sbltable" hidden ></div>
 <div hidden ><img id="signConvension" src="https://sfdbmd.ameonlinesolutions.com/images/sfd%20bmd%20sign%20convension.jpg"></div>
-<div id="AllFigures" class=PageA4 style="text-align: center; ></div>
-<a id=download download="myImage.jpg" href="" onclick="download_img("myCanvas2",this);">Download to myImage.jpg</a>
+<div id="AllFigures" class=PageA4 style="text-align: center;" ></div>
+<div id=downloadcanvas></div>
+
 
 <script>
   refreshSFDBMD();
