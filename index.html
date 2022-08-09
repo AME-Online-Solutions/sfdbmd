@@ -78,7 +78,13 @@
 </style>
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+	
+	
 <script>
+download_img = function(canvas,el) {
+  var image = canvas.toDataURL("image/jpg");
+  el.href = image;
+};
   //function download() {
  //   var dt = canvas.toDataURL('image/jpeg');
  //   this.href = dt;
@@ -685,10 +691,12 @@ End Magnitude </td><td><input type="text" id="_cw_EndMagnitude" value="" > kN/m
 <div id="bexport" hidden>
     <button id="btn-export" onclick="exportHTML('sfd_bmd_solution');">Export to word doc</button>
 </div>
-<div id="AllFigures" class=PageA4 style="text-align: center; ></div>
-<div id="contraflexure" ></div>
-<div id="sbltable"></div>
+<div id="contraflexure" hidden ></div>
+<div id="sbltable" hidden ></div>
 <div hidden ><img id="signConvension" src="https://sfdbmd.ameonlinesolutions.com/images/sfd%20bmd%20sign%20convension.jpg"></div>
+<div id="AllFigures" class=PageA4 style="text-align: center; ></div>
+<a id=download download="myImage.jpg" href="" onclick="download_img("myCanvas2",this);">Download to myImage.jpg</a>
+
 <script>
   refreshSFDBMD();
 </script>
