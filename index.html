@@ -78,16 +78,46 @@
 </style>
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-	
-	
 <script>
-function downloadAsImage(canvasid){
-  var link = document.createElement('a');
-  link.download = 'filename.png';
-  link.href = document.getElementById(canvasid).toDataURL();
-  link.click();
+function ExportToDoc(filename = ''){
+  var HtmlHead = "<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><title>Export HTML To Doc</title></head><body>";
+  var EndHtml = "</body></html>";
+  var html = HtmlHead +document.getElementById("AllFigures2").innerHTML+EndHtml;
+  var blob = new Blob(['\ufeff', html], {    type: 'application/msword'    });
+  var url = 'data:application/vnd.ms-word;charset=utf-8,' + encodeURIComponent(html);
+  filename = filename?filename+'.doc':'document.doc';
+  var downloadLink = document.createElement("a");
+  document.body.appendChild(downloadLink);
+  if(navigator.msSaveOrOpenBlob ){
+      navigator.msSaveOrOpenBlob(blob, filename);
+  }else{
+      downloadLink.href = url;
+      downloadLink.download = filename;
+      downloadLink.click();
+  }
+  document.body.removeChild(downloadLink);
 }
+    function exportHTML(divid){
+       var header = "<html xmlns:o='urn:schemas-microsoft-com:office:office' "+
+            "xmlns:w='urn:schemas-microsoft-com:office:word' "+
+            "xmlns='http://www.w3.org/TR/REC-html40'>"+
+            "<head><meta charset='utf-8'><title>Export HTML to Word Document with JavaScript</title></head><body>";
+       var footer = "</body></html>";
+       var sourceHTML = header+document.getElementById(divid).innerHTML+footer;
+       
+       var source = 'data:application/vnd.ms-word;charset=utf-8,' + encodeURIComponent(sourceHTML);
+       var fileDownload = document.createElement("a");
+       document.body.appendChild(fileDownload);
+       fileDownload.href = source;
+       fileDownload.download = 'document.doc';
+       fileDownload.click();
+       document.body.removeChild(fileDownload);
+    }
 
+  //function download() {
+ //   var dt = canvas.toDataURL('image/jpeg');
+ //   this.href = dt;
+ // };
   //downloadLnk.addEventListener('click', download, false);
 $(document).ready(function(){
   $("#_cw_MainDiv button").click(function(){
@@ -157,22 +187,6 @@ $(document).ready(function(){
 });
 
 
-    function exportHTML(divid){
-       var header = "<html xmlns:o='urn:schemas-microsoft-com:office:office' "+
-            "xmlns:w='urn:schemas-microsoft-com:office:word' "+
-            "xmlns='http://www.w3.org/TR/REC-html40'>"+
-            "<head><meta charset='utf-8'><title>Export HTML to Word Document with JavaScript</title></head><body>";
-       var footer = "</body></html>";
-       var sourceHTML = header+document.getElementById(divid).innerHTML+footer;
-       
-       var source = 'data:application/vnd.ms-word;charset=utf-8,' + encodeURIComponent(sourceHTML);
-       var fileDownload = document.createElement("a");
-       document.body.appendChild(fileDownload);
-       fileDownload.href = source;
-       fileDownload.download = 'document.doc';
-       fileDownload.click();
-       document.body.removeChild(fileDownload);
-    }
 
 function Transpose_(array){
   if(array==null || array==[] || array.length==0 ){return array;}
@@ -518,8 +532,8 @@ function show_LoadTable(appendRow){
 }
 function addAllFigures(){
   // https://sfdbmd.ameonlinesolutions.com/images/sfd%20bmd%20sign%20convension.jpg
-  var img = document.getElementById("signConvension");img.crossOrigin = 'Anonymous';
-  var img1 = document.getElementById("myCanvas");img1.crossOrigin = 'Anonymous';
+  var img = document.getElementById("signConvension");
+  var img1 = document.getElementById("myCanvas");
   sidh("AllFigures",'<br><canvas id="myCanvas2" width="'+img1.width+'" height="'+(img1.height*3+img.height+30)+'" style="background:white;">Your browser does not support the HTML5 canvas tag.</canvas>');
   var c = document.getElementById("myCanvas2");var ctx = c.getContext("2d");
   let cW=c.scrollWidth,cH=c.scrollHeight;
@@ -529,13 +543,24 @@ function addAllFigures(){
   ctx.strokeRect(0, 0, img1.width, img.height);
   ctx.drawImage(img1, 0, img.height+10);
   ctx.strokeRect(0, img.height+10, img1.width, img1.height);
-  var img2 = document.getElementById("showSFD3");img2.crossOrigin = 'Anonymous';
+  var img2 = document.getElementById("showSFD3");
   ctx.drawImage(img2, 0, img.height+img1.height+20);
   ctx.strokeRect(0, img.height+img1.height+20, img2.width, img2.height);
-  var img3 = document.getElementById("showBMD3");img3.crossOrigin = 'Anonymous';
+  var img3 = document.getElementById("showBMD3");
   ctx.drawImage(img3, 0, img.height+img1.height+img2.height+30);
   ctx.strokeRect(0, img.height+img1.height+img2.height+30, img3.width, img3.height);
   sidh("downloadcanvas",'<button onclick=event.preventDefault();downloadAsImage("myCanvas2"); >Download as jpg</button>');
+  
+  let text='';
+  //text+='<br><div align=center><img src="'+img.toDataURL('image/jpg')+'"></div>';
+  text+='<br><div align=left>'+document.getElementById("sfd_bmd_solution").innerHTML+'</div>';
+  text+='<br><div align=center>'+document.getElementById("sgncnv").innerHTML+'</div>';
+  text+='<br><div align=center><img src="'+img1.toDataURL('image/jpg')+'"></div>';
+  text+='<br><div align=center><img src="'+img2.toDataURL('image/jpg')+'"></div>';
+  text+='<br><div align=center><img src="'+img3.toDataURL('image/jpg')+'"></div>';
+  sidh("AllFigures2",text);
+  sidh("downloadWord",'<button onclick=event.preventDefault();ExportToDoc(); >Download as Word</button>');
+
 }
 function refreshSFDBMD(){
   sidh("sfd_bmd_solution","");
@@ -683,7 +708,6 @@ End Magnitude </td><td><input type="text" id="_cw_EndMagnitude" value="" > kN/m
 
 
 <div id="_cw_LoadData" ></div>
-<!---<div id="_cw_LoadData" >[["Type","Start/Point Position (m)","End Position (m)","Start/Point Magnitude (kN/m)","End Magnitude (kN/m)","Direction"],["","","","","",""],["Beam",0,"9","","",""],["Hinged Support","0","",-22.22222222222222,"",""],["Roller Support","9","",-17.77777777777778,"",""],["Distributed Load","2","6","10","10",""]]</div> --->
 <div id="_cw_MaxX" hidden ></div><div id="_cw_MaxY" hidden ></div><div id="_cw_MinY" hidden ></div><div id="_cw_Landmarks" hidden></div><div id="tempvals"  ></div>
 	 
 <div id=sfd_bmd_solution class=PageA4 ></div>
@@ -691,12 +715,14 @@ End Magnitude </td><td><input type="text" id="_cw_EndMagnitude" value="" > kN/m
 <div id="bexport" hidden>
     <button id="btn-export" onclick="exportHTML('sfd_bmd_solution');">Export to word doc</button>
 </div>
+
 <div id="contraflexure" hidden ></div>
 <div id="sbltable" hidden ></div>
-<div hidden ><img id="signConvension" src="https://sfdbmd.ameonlinesolutions.com/images/sfd%20bmd%20sign%20convension.jpg"></div>
+<div id=sgncnv hidden ><img id="signConvension" src="https://sfdbmd.ameonlinesolutions.com/images/sfd%20bmd%20sign%20convension.jpg"></div>
 <div id="AllFigures" class=PageA4 style="text-align: center;" ></div>
 <div id=downloadcanvas></div>
-
+<div id="AllFigures2" class=PageA4 style="text-align: center;" ></div>
+<div id="downloadWord"></div>
 
 <script>
   refreshSFDBMD();
