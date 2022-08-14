@@ -214,7 +214,6 @@ function SimpleD2T(Data,tableid){
   var table="";
   table+= "<table id='"+tableid+"' border=1 style='border-collapse:collapse;' > ";
   for(var i=0;i<Data.length;i++){
-    for(let j=0;j<Data[0].length;j++){if(!Data[i][j]){Data[i][j]="";}}
     if(i==0){
       table+="<thead><tr><th>"+Data[i].join("</th><th>")+"</th></tr></thead><tbody>";
     }else{
@@ -224,6 +223,7 @@ function SimpleD2T(Data,tableid){
   table+="</tbody></table>";
   return table;
 }
+
 function sortByColumn_(a, colIndex,headerrow){
   if(headerrow==1){ var R0=[]; R0[0]=a[0]; a.splice(0,1); a=sortByColumn0_(a, colIndex); a.splice(0,0,R0[0]);}else{a=sortByColumn0_(a, colIndex);}
   return a;
@@ -257,18 +257,26 @@ function show_dimensions(ctx,p0,Data,Yd){
 }
 
 function draw_moment(ctx,p){
-  let ctxlw=ctx.lineWidth; ctx.lineWidth=2; let R=30,theta1=Math.PI-Math.PI/6,theta2=2*Math.PI+Math.PI/2; ctx.beginPath(); ctx.arc(p.x, p.y, R, theta1,theta2); ctx.stroke(); ctx.beginPath(); ctx.arc(p.x, p.y, 5, 0,2*Math.PI); ctx.stroke(); let theta=theta1; if(p.dir!="CC"){p.dir="C";theta=theta2;}; let ep={x:p.x+R*Math.cos(theta),y:p.y+R*Math.sin(theta)};
+  let ctxlw=ctx.lineWidth; ctx.lineWidth=2; let R=30,theta1=Math.PI-Math.PI/6,theta2=2*Math.PI+Math.PI/3; ctx.beginPath(); ctx.arc(p.x, p.y, R, theta1,theta2); ctx.stroke(); ctx.beginPath(); ctx.arc(p.x, p.y, 5, 0,2*Math.PI); ctx.stroke(); let theta=theta1; if(p.dir!="CC"){p.dir="C";theta=theta2;}; let ep={x:p.x+R*Math.cos(theta),y:p.y+R*Math.sin(theta)};
   if(p.dir!="CC"){
-    ctx.beginPath();ctx.moveTo( ep.x+7, ep.y-7);ctx.lineTo( ep.x, ep.y );ctx.lineTo( ep.x+10, ep.y+5);ctx.stroke();draw_text(ctx,{x:ep.x-10,y:ep.y-10},p.m);
+    ctx.beginPath();ctx.moveTo( ep.x+2, ep.y-7);ctx.lineTo( ep.x, ep.y );ctx.lineTo( ep.x+10, ep.y-2);ctx.stroke();draw_text(ctx,{x:ep.x-10,y:ep.y-5},p.m);
   }else{
-    ctx.beginPath();ctx.moveTo( ep.x+3, ep.y-7);ctx.lineTo( ep.x, ep.y );ctx.lineTo( ep.x-8, ep.y-5);ctx.stroke();draw_text(ctx,{x:ep.x+10,y:ep.y+10},p.m);
+    ctx.beginPath();ctx.moveTo( ep.x+3, ep.y-7);ctx.lineTo( ep.x, ep.y );ctx.lineTo( ep.x-8, ep.y-5);ctx.stroke();draw_text(ctx,{x:ep.x+5,y:ep.y},p.m);
   }
   ctx.lineWidth=ctxlw;
 }
 
-function draw_support(ctx,p){
+function draw_support(ctx,p,showReactions,LorR){
   //type - Hinged, Roller, Fixed-Left,Fixed-Right
   //p={x:550,y:150,type:"Fixed-Right"}
+  let dir="CC";
+  if(LorR<=0.5){LorR="l";}else{LorR="r";dir="C";}
+  if(showReactions==true){
+    draw_Arrow(ctx,{x:p.x,y:p.y+40},{x:p.x,y:p.y});
+    draw_text(ctx,{x:p.x+2,y:p.y+40},"R"+LorR);
+    if(p.type=="Fixed"){draw_moment(ctx,{x:p.x,y:p.y,dir:dir,m:"M"+LorR})}
+    return;
+  }
   let ctxlw=ctx.lineWidth
   switch(p.type){
     case "Hinged":
@@ -405,10 +413,10 @@ function showGraphOnCanvas(GraphData,GraphId,CId,Landmarks){
 }
 
 
-function show_FBD(){
+function show_FBD(eid,Heading="Free Body Diagram (FBD)",showReactions=false,cut=0){
   //console.log("sfbd");
-  sidh("_cw_LoadFigure",'<canvas id="myCanvas" width="600" height="250" style="border:1px solid #aaa;background:white;">Your browser does not support the HTML5 canvas tag.</canvas>');
-  var c = document.getElementById("myCanvas");var ctx = c.getContext("2d");
+  //sidh("_cw_LoadFigure",'<canvas id="myCanvas" width="600" height="250" style="border:1px solid #aaa;background:white;">Your browser does not support the HTML5 canvas tag.</canvas>');
+  var c = document.getElementById(eid);var ctx = c.getContext("2d");
   let Data=JSON.parse(gidh("_cw_LoadData"));
   let DataCol1=Data.map(function(value,index) {return value[0];});
   let index=DataCol1.indexOf("Beam");
@@ -432,20 +440,26 @@ function show_FBD(){
   let scaleX=S.scaleX,scaleY=S.scaleY,x=S.x0,y=S.y0,cW=S.cW,cH=S.cH,Yd=S.Yd;
   ctx.fillStyle = "white";ctx.fillRect(0, 0, cW, cH);
   ctx.fillStyle = "black";
-  ctx.fillText("Free Body Diagram (FBD)", 2, 10);
+  ctx.fillText(Heading, 2, 10);
   let p0={scaleX:scaleX,scaleY:scaleY,x:x,y:y};
   //let p0={scaleX:500/MaxX,scaleY:200/(MaxY-MinY),x:50,y:300-MinY*200/(MaxY-MinY)};
   sidh("tempvals", p0.scaleX+" "+p0.scaleY+" "+p0.x+" "+p0.y)
   //console.log("p0.scaleX = "+p0.scaleX+" p0.scaleY="+p0.scaleY+"    p0.x="+p0.x+"   p0.y="+p0.y)
   show_dimensions(ctx,p0,Data,Yd);
   for(let i=2;i<Data.length;i++){
-  	if(Data[i][0]=="Beam"){draw_Beam(ctx,p0,Data[i]);};
-  	if(Data[i][0].indexOf("Support")>-1){draw_support(ctx,{type:Data[i][0].split(" ")[0],x:p0.x+p0.scaleX*Data[i][1],y:p0.y,location:Data[i][1]})};
+  	if(Data[i][0]=="Beam") {draw_Beam(ctx,p0,Data[i]);};
+  	if(Data[i][0].indexOf("Support")>-1){draw_support(ctx,{type:Data[i][0].split(" ")[0],x:p0.x+p0.scaleX*Data[i][1],y:p0.y,location:Data[i][1]},showReactions,Data[i][1]/MaxX)};
   	if(Data[i][0]=="Moment"){draw_moment(ctx,{x:p0.x+p0.scaleX*Data[i][1],y:p0.y,dir:Data[i][5],m:Data[i][3]});};
   	if(Data[i][0]=="Point Load"){draw_pointLoad(ctx, {x:p0.x+p0.scaleX*Data[i][1],y:p0.y,l:Data[i][3],theta:Data[i][5],scaleY:p0.scaleY})};
   	if(Data[i][0]=="Distributed Load"){draw_DistributedLoad(ctx, {x:p0.x+p0.scaleX*Data[i][1],y:p0.y,l:Data[i][3],scaleY:p0.scaleY}, {x:p0.x+p0.scaleX*Data[i][2],y:p0.y,l:Data[i][4],scaleY:p0.scaleY})};
   }
-  
+  if(cut>0){
+    let cW=c.scrollWidth,cH=c.scrollHeight;
+    ctx.fillStyle = "white";ctx.fillRect(p0.x+p0.scaleX*cut, 20, cW, Yd-20);
+    draw_Arrow( ctx, {x:p0.x+p0.scaleX*cut+10,y:p0.y+15},{x:p0.x+p0.scaleX*cut+10,y:p0.y-15});
+    draw_text(ctx,{x:p0.x+p0.scaleX*cut+7,y:p0.y+25},"V");
+    draw_moment(ctx,{x:p0.x+p0.scaleX*cut,y:p0.y,dir:"CC",m:"M"});
+  }
 }
 
 async function sfd_bmd_Table(){
@@ -559,7 +573,21 @@ function addAllFigures(){
   text+='<br><div align=center><img src="'+img2.toDataURL('image/jpg')+'"></div>';
   text+='<br><div align=center><img src="'+img3.toDataURL('image/jpg')+'"></div>';
   sidh("AllFigures2",text);
+  let eidiv='<canvas id="eCanvas0" width="600" height="250" style="border:1px solid #aaa;background:white;">Your browser does not support the HTML5 canvas tag.</canvas>';
+  //show_FBD(eid,Heading="Free Body Diagram (FBD)",showReactions=false,cut=0)
+  let Landmarks=JSON.parse(gidh("_cw_Landmarks"));  
+  for(let i=1;i<Landmarks.length;i++){
+    eidiv+='<br><canvas id="eCanvas'+i+'" width="600" height="250" style="border:1px solid #aaa;background:white;">Your browser does not support the HTML5 canvas tag.</canvas>';
+  }
+  sidh("extraImages",eidiv);
+  show_FBD("eCanvas0","FBD - Vertical Forces",true,0);
+  for(let i=1;i<Landmarks.length;i++){
+    let cut=Math.ceil((Landmarks[i]+Number(Landmarks[i-1]))/2);
+    show_FBD("eCanvas"+i,"FBD- Cut Section (x="+cut+")",true,cut);
+  }
   sidh("downloadWord",'<button onclick=event.preventDefault();ExportToDoc(); >Download as Word</button>');
+  //sidh("extraImages",);
+  //show_FBD("myCanvas");
 
 }
 function refreshSFDBMD(){
@@ -571,7 +599,8 @@ function refreshSFDBMD(){
   //console.log("loaddata = "+gidh("_cw_LoadData"));
   if(gidh("_cw_LoadData")==null || gidh("_cw_LoadData")==""){return "";}
   show_LoadTable();
-  show_FBD();
+  sidh("_cw_LoadFigure",'<canvas id="myCanvas" width="600" height="250" style="border:1px solid #aaa;background:white;">Your browser does not support the HTML5 canvas tag.</canvas>');
+  show_FBD("myCanvas");
   sfd_bmd_Table();
 
   
@@ -723,6 +752,7 @@ End Magnitude </td><td><input type="text" id="_cw_EndMagnitude" value="" > kN/m
 <div id=downloadcanvas></div>
 <div id="AllFigures2" class=PageA4 style="text-align: center;" ></div>
 <div id="downloadWord"></div>
+<div id="extraImages" class=PageA4 style="text-align: center;" ></div>
 
 <script>
   refreshSFDBMD();
