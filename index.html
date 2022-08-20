@@ -275,7 +275,7 @@ function draw_support(ctx,p,showReactions,LorR){
   //type - Hinged, Roller, Fixed-Left,Fixed-Right
   //p={x:550,y:150,type:"Fixed-Right"}
   let dir="CC";
-  if(LorR<=0.5){LorR="l";}else{LorR="r";dir="C";}
+  if(LorR<=0.5){LorR="𝜾";}else{LorR="𝓇";dir="C";}
   if(showReactions==true){
     draw_Arrow(ctx,{x:p.x,y:p.y+40},{x:p.x,y:p.y});
     ctx.textBaseline = "alphabetic"; 
