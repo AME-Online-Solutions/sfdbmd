@@ -279,9 +279,9 @@ function draw_support(ctx,p,showReactions,LorR){
   if(showReactions==true){
     draw_Arrow(ctx,{x:p.x,y:p.y+40},{x:p.x,y:p.y});
     ctx.textBaseline = "alphabetic"; 
-    draw_text(ctx,{x:p.x+2,y:p.y+40},"R");
-    ctx.textBaseline = "middle"; 
-    draw_text(ctx,{x:p.x+3+ctx.measureText("R").width,y:p.y+40},LorR);
+    draw_text(ctx,{x:p.x+2,y:p.y+40},"R"+LorR);
+    //ctx.textBaseline = "middle"; 
+    //draw_text(ctx,{x:p.x+3+ctx.measureText("R").width,y:p.y+40},LorR);
     if(p.type=="Fixed"){draw_moment(ctx,{x:p.x,y:p.y,dir:dir,m:"M"+LorR})}
     return;
   }
