@@ -113,7 +113,15 @@ function ExportToDoc(filename = ''){
        fileDownload.click();
        document.body.removeChild(fileDownload);
     }
-
+function copyToClipboard(elem) {
+    var range = document.createRange();
+    range.selectNode(document.getElementById(elem));
+    window.getSelection().removeAllRanges();
+    window.getSelection().addRange(range);
+    document.execCommand("copy");
+    window.getSelection().removeAllRanges();
+    alert("data copied");
+}
   //function download() {
  //   var dt = canvas.toDataURL('image/jpeg');
  //   this.href = dt;
@@ -278,8 +286,8 @@ function draw_support(ctx,p,showReactions,LorR){
   if(LorR<=0.5){LorR="𝜾";}else{LorR="𝓇";dir="C";}
   if(showReactions==true){
     draw_Arrow(ctx,{x:p.x,y:p.y+40},{x:p.x,y:p.y});
-    ctx.textBaseline = "alphabetic"; 
-    draw_text(ctx,{x:p.x+2,y:p.y+40},"R"+LorR);
+    //ctx.textBaseline = "alphabetic"; 
+    draw_text(ctx,{x:p.x+2,y:p.y+40},"R"+LorR,"16px Arial");
     //ctx.textBaseline = "middle"; 
     //draw_text(ctx,{x:p.x+3+ctx.measureText("R").width,y:p.y+40},LorR);
     if(p.type=="Fixed"){draw_moment(ctx,{x:p.x,y:p.y,dir:dir,m:"M"+LorR})}
@@ -553,7 +561,22 @@ function show_LoadTable(appendRow){
   for(let i=2;i<Data.length;i++){selectElement.add(new Option(Data[i].join("_"), Data[i].join("_")));}
 }
 function addAllFigures(){
-  // https://sfdbmd.ameonlinesolutions.com/images/sfd%20bmd%20sign%20convension.jpg
+  let eidiv='<canvas id="eCanvas0" width="600" height="250" style="border:1px solid #aaa;background:white;">Your browser does not support the HTML5 canvas tag.</canvas>';
+  //show_FBD(eid,Heading="Free Body Diagram (FBD)",showReactions=false,cut=0)
+  let Landmarks=JSON.parse(gidh("_cw_Landmarks"));  
+  for(let i=1;i<Landmarks.length;i++){
+    eidiv+='<br><canvas id="eCanvas'+i+'" width="600" height="250" style="border:1px solid #aaa;background:white;">Your browser does not support the HTML5 canvas tag.</canvas>';
+  }
+  unhide("extraImages");sidh("extraImages",eidiv);
+  show_FBD("eCanvas0","FBD - Vertical Forces",true,0);
+  for(let i=1;i<Landmarks.length;i++){
+    let cut=Math.ceil((Landmarks[i]+Number(Landmarks[i-1]))/2);
+    show_FBD("eCanvas"+i,"FBD- Cut Section (x="+cut+")",true,cut);
+  }
+  
+  sidh("downloadWord",'<button onclick=event.preventDefault();ExportToDoc(); >Download as Word</button><br><button onclick=event.preventDefault();copyToClipboard("AllFigures2"); >Copy to Clipboard</button>');
+
+// https://sfdbmd.ameonlinesolutions.com/images/sfd%20bmd%20sign%20convension.jpg
   var img = document.getElementById("signConvension");
   var img1 = document.getElementById("myCanvas");
   unhide("AllFigures");sidh("AllFigures",'<br><canvas id="myCanvas2" width="'+img1.width+'" height="'+(img1.height*3+img.height+30)+'" style="background:white;">Your browser does not support the HTML5 canvas tag.</canvas>');
@@ -580,20 +603,10 @@ function addAllFigures(){
   text+='<br><div align=center><img src="'+img1.toDataURL('image/jpg')+'"></div>';
   text+='<br><div align=center><img src="'+img2.toDataURL('image/jpg')+'"></div>';
   text+='<br><div align=center><img src="'+img3.toDataURL('image/jpg')+'"></div>';
+  for(let i=0;i<Landmarks.length;i++){
+    text+='<br><div align=center><img src="'+document.getElementById("eCanvas"+i).toDataURL('image/jpg')+'"></div>';
+  }
   unhide("AllFigures2");sidh("AllFigures2",text);
-  let eidiv='<canvas id="eCanvas0" width="600" height="250" style="border:1px solid #aaa;background:white;">Your browser does not support the HTML5 canvas tag.</canvas>';
-  //show_FBD(eid,Heading="Free Body Diagram (FBD)",showReactions=false,cut=0)
-  let Landmarks=JSON.parse(gidh("_cw_Landmarks"));  
-  for(let i=1;i<Landmarks.length;i++){
-    eidiv+='<br><canvas id="eCanvas'+i+'" width="600" height="250" style="border:1px solid #aaa;background:white;">Your browser does not support the HTML5 canvas tag.</canvas>';
-  }
-  unhide("extraImages");sidh("extraImages",eidiv);
-  show_FBD("eCanvas0","FBD - Vertical Forces",true,0);
-  for(let i=1;i<Landmarks.length;i++){
-    let cut=Math.ceil((Landmarks[i]+Number(Landmarks[i-1]))/2);
-    show_FBD("eCanvas"+i,"FBD- Cut Section (x="+cut+")",true,cut);
-  }
-  sidh("downloadWord",'<button onclick=event.preventDefault();ExportToDoc(); >Download as Word</button>');
   //sidh("extraImages",);
   //show_FBD("myCanvas");
 
